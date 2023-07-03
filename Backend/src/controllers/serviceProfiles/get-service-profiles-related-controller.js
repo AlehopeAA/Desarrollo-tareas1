@@ -1,0 +1,43 @@
+'use strict'
+
+const asyncHandler = require('express-async-handler')
+const db = require('../../config/mysql/db')
+
+// @desc    get all related service profiles
+// @route   GET /api/perfilservicios
+// @access  Private/Admin
+const getServiceProfilesRelated = asyncHandler(async (req, res) => {
+
+   const { id_puesto } = req.user
+
+   const profileServiceQuery = `
+      SELECT *
+      FROM perfil_servicio 
+      WHERE id_servicio IN (
+         SELECT DISTINCT p.id_servicio
+            FROM perfiles_puesto AS pp 
+               INNER JOIN perfiles AS p ON p.id_perfil = pp.id_perfil 
+            WHERE pp.id_puesto IN (
+               SELECT id_puesto 
+               FROM actividades.responsables R 
+               WHERE R.id_puesto_responsable = ${ id_puesto }
+               
+               UNION 
+               
+               SELECT id_puesto 
+               FROM actividades.validadores R 
+               WHERE R.id_puesto_validador = ${ id_puesto }
+            )
+      )
+      ORDER BY descripcion_servicio
+   `
+
+   db.query(profileServiceQuery, (err, result) => {
+      if (err) {
+         res.status(400).json({ message: err.sqlMessage })
+      }
+      res.status(200).json(result)
+   })
+})
+
+module.exports = getServiceProfilesRelated

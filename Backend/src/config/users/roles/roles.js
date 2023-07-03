@@ -1,0 +1,30 @@
+'use strict'
+
+const USUARIO_ROLE = 'usuario'
+const RESPONSABLE_ROLE = 'responsable'
+const GESTOR_DE_DATOS_ROLE = 'datos'
+const VALIDADOR_ROLE = 'validador'
+const GESTOR_DE_PERFILES_ROLE = 'gestor'
+const ADMIN_ROLE = 'administrador'
+const SUPER_ROLE = 'superadministrador'
+
+const ALL_USER_ROLES = [
+  USUARIO_ROLE,
+  RESPONSABLE_ROLE,
+  GESTOR_DE_DATOS_ROLE,
+  VALIDADOR_ROLE,
+  GESTOR_DE_PERFILES_ROLE,
+  ADMIN_ROLE,
+  SUPER_ROLE,
+]
+
+module.exports = {
+  ALL_USER_ROLES,
+  USUARIO_ROLE,
+  RESPONSABLE_ROLE,
+  GESTOR_DE_DATOS_ROLE,
+  VALIDADOR_ROLE,
+  GESTOR_DE_PERFILES_ROLE,
+  ADMIN_ROLE,
+  SUPER_ROLE,
+}

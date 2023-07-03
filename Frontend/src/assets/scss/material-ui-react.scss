@@ -1,0 +1,20 @@
+// variables and mixins
+@import 'material-ui-react/variables';
+@import 'material-ui-react/mixins';
+@import 'material-ui-react/shadows';
+
+// plugin css
+@import 'material-ui-react/plugins/plugin-nouislider';
+@import 'material-ui-react/plugins/plugin-perfect-scrollbar';
+@import 'material-ui-react/plugins/plugin-react-datetime';
+@import 'material-ui-react/plugins/plugin-react-bootstrap-sweetalert';
+@import 'material-ui-react/plugins/plugin-react-chartist';
+@import 'material-ui-react/plugins/plugin-react-big-calendar';
+@import 'material-ui-react/plugins/plugin-react-jvectormap';
+@import 'material-ui-react/plugins/plugin-react-table';
+@import 'material-ui-react/plugins/plugin-react-tagsinput';
+
+// Core CSS
+@import 'material-ui-react/misc';
+@import 'material-ui-react/fileupload';
+@import 'material-ui-react/fixed-plugin';

@@ -1,0 +1,42 @@
+
+##########################################################
+###### Proceso de creación de los enpoints en la API #####
+##########################################################
+
+1 Crear modelo de mongo db
+  Todos los modelos deben llevar el timestamps a true
+
+2 Crear el Controlador
+  las funciones del controlador siempre deben devolver json y un status code del servidor
+
+3 Crear las rutas
+  en las rutas se añade el middleware necesario para los permisos a ese endpoint
+  añadir la ruta al archivo index
+
+4 Añadir la ruta al archivo server.js 
+  En el archivo /src/config/server/server.js se importan las rutas del index.js de las /routes
+
+5 Probar todo con Postman
+  Crear el envirnment en Postman para probar todos los endpoints creados
+  Crear los variables de entorno necesarias para el postman
+  
+
+
+##########################################################
+#################### Boy Scout Rules #####################
+##########################################################
+
+- Si hay algun codigo mejorable discutirlo con los demas
+- Siempre dejar más limpio de lo que lo encontrasete
+- Nunca dejar comentarios innecesarios
+- Nunca comentar codigo solo por deshabilitarlo
+- Nunca dejar console logs
+
+
+##########################################################
+######################## Notas ###########################
+##########################################################
+
+- Solo utilizar la rama dev
+- Nunca subir nada a dev que no este funcionando correctamente
+- Se pueden crear ramas feature para guardar codigo mientras de desarrolla
