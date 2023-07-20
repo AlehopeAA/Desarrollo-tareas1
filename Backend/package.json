@@ -39,5 +39,6 @@
     "setupFiles": [
       "./src/__tests__/config/setup.js"
     ]
-  }
+  },
+  "keywords": []
 }
