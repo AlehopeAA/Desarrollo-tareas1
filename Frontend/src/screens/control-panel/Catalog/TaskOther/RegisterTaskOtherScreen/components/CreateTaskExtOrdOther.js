@@ -144,8 +144,8 @@ const CreateTaskOther = ({ taskType, setTaskType }) => {
             onChange={(e) => setTaskOther({ ...taskOther, task_type: e.target.value })}
             required= 'true'
           >
-            <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
             <MenuItem value={'ORDINARIA'}>ORDINARIA</MenuItem>
+            <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
           </Select>
         </FormControl>
       </GridItem>
