@@ -46,7 +46,7 @@ const LoginScreen = ({ location, history }) => {
         //Borramos la informacion ya que esta expirada Haciendo logout.
         dispatch(logout())
       
-        return function cleanup() {
+        return function cleanup(id) {
           window.clearTimeout(id)
         }
       })
@@ -65,13 +65,13 @@ const LoginScreen = ({ location, history }) => {
           }
           else
           {
-            return function cleanup() {
+            return function cleanup(id) {
               window.clearTimeout(id)
             }
           }
         })
         .catch(error => {
-          return function cleanup() {
+          return function cleanup(id) {
             window.clearTimeout(id)
           }
         })

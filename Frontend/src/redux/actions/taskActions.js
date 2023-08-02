@@ -12,6 +12,7 @@ import {
   TASK_BY_ID_RESET,
   TASK_UPDATE_SUCCESS,
   TASK_UPDATE_REQUEST,
+  TASK_DUPLICATED_REFUSED,
   TASK_UPDATE_FAIL,
   TASK_DELETE_FAIL,
   TASK_DELETE_REQUEST,
@@ -26,6 +27,7 @@ import {
   TASK_LIST_DUPLICATE_BY_PROFILE_FILTER_DUPLICATE_TASK,
   TASK_LIST_DUPLICATE_BY_PROFILE_MODIFY_TASK,
 } from '../constants/taskConstants.js'
+import { AirportShuttle } from '@material-ui/icons'
 
 export const registerTask = (task) => async (dispatch, getState) => {
   try {
@@ -41,6 +43,13 @@ export const registerTask = (task) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
+//Implementación nueva:
+const { data: taskByProfile } = await axios.get(`/api/tareas/perfiles/${task.id_perfil}`, config);
+const isTaskAsigned = taskByProfile.some((existingTask) => existingTask.id_tarea === task.id_tarea);
+if(isTaskAsigned){
+  dispatch({ type: TASK_REGISTER_FAIL, payload: "La tarea ya está asignada a este perfil"});
+  return;
+}
 
     const { data } = await axios.post('/api/tareas', task, config)
 
