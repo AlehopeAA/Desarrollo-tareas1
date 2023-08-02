@@ -15,26 +15,35 @@ const getProfiles = asyncHandler(async (req, res) => {
 
   if ( isAdminOrSuper ) {
     query = `
-      SELECT 
-         perfiles.id_perfil, 
-         perfiles.codigo_perfil, 
-         perfiles.fecha_alta,
-         perfiles.fecha_baja, 
-         perfiles.activo,  
-         perfiles.descripcion_perfil, 
-         perfil_subdireccion.descripcion_subdireccion , 
-         perfil_unidad.descripcion_unidad , 
-         perfil_servicio.descripcion_servicio , 
-         perfil_rol.descripcion_rol, 
-         perfil_departamento.descripcion_departamento 
-      FROM perfiles 
-         LEFT JOIN perfil_subdireccion ON perfiles.id_subdireccion = perfil_subdireccion.id_subdireccion 
-         LEFT JOIN perfil_servicio ON perfiles.id_servicio = perfil_servicio.id_servicio 
-         LEFT JOIN perfil_departamento ON perfiles.id_departamento = perfil_departamento.id_departamento 
-         LEFT JOIN perfil_unidad ON perfiles.id_unidad = perfil_unidad.id_unidad 
-         LEFT JOIN perfil_rol ON perfiles.id_rol = perfil_rol.id_rol 
-      WHERE perfiles.id_perfil
-      ORDER BY perfiles.codigo_perfil`
+    SELECT 
+    perfiles.id_perfil, 
+    perfiles.codigo_perfil, 
+    perfiles.fecha_alta,
+    perfiles.fecha_baja, 
+    perfiles.activo,  
+    perfiles.descripcion_perfil, 
+    perfil_subdireccion.descripcion_subdireccion , 
+    perfil_unidad.descripcion_unidad , 
+    perfil_servicio.descripcion_servicio , 
+    perfil_rol.descripcion_rol, 
+    perfil_departamento.descripcion_departamento,
+    (
+        SELECT COUNT(*)
+        FROM actividades.tareas_perfil
+        LEFT JOIN actividades.tareas
+        ON actividades.tareas.id_tarea = actividades.tareas_perfil.id_tarea
+        WHERE actividades.tareas.compartida = 'SI'
+        AND actividades.tareas_perfil.id_perfil = perfiles.id_perfil
+    ) AS count_tareas_compartidas
+FROM perfiles 
+    LEFT JOIN perfil_subdireccion ON perfiles.id_subdireccion = perfil_subdireccion.id_subdireccion 
+    LEFT JOIN perfil_servicio ON perfiles.id_servicio = perfil_servicio.id_servicio 
+    LEFT JOIN perfil_departamento ON perfiles.id_departamento = perfil_departamento.id_departamento 
+    LEFT JOIN perfil_unidad ON perfiles.id_unidad = perfil_unidad.id_unidad 
+    LEFT JOIN perfil_rol ON perfiles.id_rol = perfil_rol.id_rol 
+WHERE perfiles.id_perfil
+ORDER BY perfiles.codigo_perfil;
+`
   } else {
     query = `
       SELECT 

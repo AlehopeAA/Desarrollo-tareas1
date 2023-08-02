@@ -53,9 +53,11 @@ const RegisterUserScreen = () => {
   const [profilesData, setProfilesData] = useState([])
   const [profilesDataError, setProfileError] = useState('')
   const [alert, setAlert] = useState(null)
+  const [secondAlertMessage, setSecondAlertMessage] = useState('')
+  const [tareasCompartidas, setTareasCompartidas] = useState(false)
 
   const { loadingUserRegister, successUserRegister, errorUserRegister } = useSelector((state) => state.userRegister)
-  
+
   useEffect(() => {
     if (successUserRegister) {
       setAlert(
@@ -87,19 +89,6 @@ const RegisterUserScreen = () => {
     setAlert(null)
   }
 
-  const confirmSuccess = () => {
-    dispatch({ type: USER_REGISTER_RESET })
-    dispatch({ type: PROFILE_LIST_RESET })
-    dispatch({ type: USER_VALIDATORS_LIST_RESET })
-    dispatch({ type: USER_RESPONSIBLES_LIST_RESET })
-    dispatch({ type: UI_MULTI_TASK_RESET })
-    setProfilesData([])
-    setValidators([])
-    setResponsibles([])
-    setAlert(null)
-    setProfileError('')
-    setUserData(initialState)
-  }
 
   const registerUserHandler = (e) => {
     e.preventDefault()
@@ -112,6 +101,28 @@ const RegisterUserScreen = () => {
       profilesData,
       validators,
     }
+
+    var message = "";
+    var perfilesTareasCompartidas = ""
+    console.log(profilesData)
+    profilesData.forEach((profile) => {
+
+      if (profile.count_tareas_compartidas > 0) {
+        perfilesTareasCompartidas += ` ${profile.codigo_perfil},`
+      }
+
+    });
+    message = `Algunas tareas del perfil${perfilesTareasCompartidas} es una tarea compartida por favor revise el reparto de % de responsabilidad
+    de sus trabajadores, considerando a este nuevo trabajador.\n`
+    console.log(message)
+    setSecondAlertMessage(message)
+    console.log(perfilesTareasCompartidas )
+
+    if (perfilesTareasCompartidas == '') {
+      setTareasCompartidas(false)
+    } else {
+      setTareasCompartidas(true)
+    }
     dispatch(registerUser({ ...dataToSend, fecha_alta: format(new Date(), 'yyyy-MM-dd') }))
   }
   const handleSelectChange = (e) => {
@@ -120,6 +131,34 @@ const RegisterUserScreen = () => {
     } = e
     value === 'Otro' ? setInput(true) : setInput(false)
     setUserData({ ...userData, [name]: value })
+  }
+
+  const confirmSuccess = () => {
+    dispatch({ type: USER_REGISTER_RESET })
+    dispatch({ type: PROFILE_LIST_RESET })
+    dispatch({ type: USER_VALIDATORS_LIST_RESET })
+    dispatch({ type: USER_RESPONSIBLES_LIST_RESET })
+    dispatch({ type: UI_MULTI_TASK_RESET })
+    setProfilesData([])
+    setValidators([])
+    setResponsibles([])
+    setAlert(null)
+    setProfileError('')
+    setUserData(initialState)
+    console.log(tareasCompartidas + "fjfiefjeiojfefi")
+    if (tareasCompartidas) {
+      setAlert(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => hideAlert()}
+          confirmBtnCssClass={classes.confirmBtnCssClass}
+        >
+          {secondAlertMessage}
+        </SweetAlert>
+      )
+    }
   }
 
   return (

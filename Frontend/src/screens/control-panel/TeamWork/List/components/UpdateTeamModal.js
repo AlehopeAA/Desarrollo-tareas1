@@ -47,9 +47,11 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
   const [profilesDataError, setProfileError] = useState('')
   const [validators, setValidators] = useState([])
   const [responsibles, setResponsibles] = useState([])
-
+  const [filteredPerfiles , setSharedTasks] = useState([])
+  const [result, setResult] = useState([])
+  const [secondAlertMessage, setSecondAlertMessage] = useState('')
   const { loadingUserDetails, userDetailData } = useSelector((state) => state.userDetails)
-
+  const [tareasCompartidas, setTareasCompartidas] = useState(false)
   const { loadingTeamWorkUpdate, successTeamWorkUpdate, errorTeamWorkUpdate } = useSelector(
     (state) => state.teamWorkUpdate
   )
@@ -60,10 +62,17 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
 
   useEffect(() => {
     if (userDetailData) {
+      console.log(userDetailData)
       setUser(userDetailData.user)
       setProfilesData(userDetailData.perfiles)
       setResponsibles(userDetailData.responsables)
       setValidators(userDetailData.validadores)
+      
+      const filteredPerfiles = userDetailData.perfiles.filter(profile => profile.count_tareas_compartidas > 0 )
+      const codigosPerfil = filteredPerfiles.map(profile => profile.codigo_perfil)
+
+      setSharedTasks(codigosPerfil)
+      console.log(codigosPerfil)
     }
   }, [userDetailData])
 
@@ -81,8 +90,7 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
           success
           style={{ display: 'block', marginTop: '-100px' }}
           title='Guardado!'
-          onConfirm={() => alert(null)}
-          onCancel={() => alert(null)}
+          onConfirm={() => hideAlert()}
           confirmBtnCssClass={classes.button + ' ' + classes.success}
         >
           El puesto de trabajo se ha editado correctamente
@@ -96,6 +104,25 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
     }
   }, [successTeamWorkUpdate])
 
+  const hideAlert = () => {
+    alert(null)
+    console.log(tareasCompartidas)
+    if(tareasCompartidas){
+      alert(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => alert(null)}        
+          confirmBtnCssClass={classes.confirmBtnCssClass}
+        >
+        {secondAlertMessage}
+        </SweetAlert>
+      )
+    }
+  }
+
+
   const updateTeamHandler = (e) => {
     e.preventDefault()
     if (!profilesData.length > 0) {
@@ -107,6 +134,34 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
       responsibles,
       validators,
     }
+    console.log(JSON.stringify(profilesData))
+    const profileDeleteSharedTask = filteredPerfiles.filter(codigo => !profilesData.some(profile => profile.codigo_perfil === codigo))
+    console.log(profileDeleteSharedTask)
+    setResult(profileDeleteSharedTask)
+
+    var message = "";
+    var perfilesTareasCompartidas = ""
+    if(profileDeleteSharedTask.length > 0){
+      console.log("tiene mas de una ")
+      console.log(profileDeleteSharedTask)
+      profileDeleteSharedTask.forEach((profile)=>
+      {
+        perfilesTareasCompartidas += ` ${profile},`
+      });
+    }
+    message = `El perfil${perfilesTareasCompartidas} del trabajador modificado incluía alguna tarea compartida,
+     por favor revise el reparto de % de responsabilidad de sus trabajadores, considerando a este nuevo trabajador.` 
+    console.log(message)
+    setSecondAlertMessage(message)
+
+    if(perfilesTareasCompartidas === ''){
+      setTareasCompartidas(false)
+      console.log("poa aqyuuuuu")
+    }else {
+      setTareasCompartidas(true)
+      console.log(tareasCompartidas + " llega por aqui")
+    }
+    
     dispatch(teamWorkUpdateInfo(data))
   }
 

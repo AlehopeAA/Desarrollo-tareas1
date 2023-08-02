@@ -34,6 +34,7 @@ import {
   userListByProfileIdReducer,
   userGetFavoritesReducer,
   userRegisterFavoritesReducer,
+  userSharedTasksCountReducer,
 } from './userReducers'
 import {
   logRegisterReducer,
@@ -394,6 +395,7 @@ export default combineReducers({
   userUpdate: userUpdateReducer,
   userGetFavorites: userGetFavoritesReducer,
   userRegisterFavorites: userRegisterFavoritesReducer,
+  userSharedTasksCount:userSharedTasksCountReducer,
   taskById: taskByIdReducer,
   activitiesRegister: activitiesRegisterReducer,
   objetiveAbsenceRegister: objetiveAbsenceRegisterReducer,
