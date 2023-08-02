@@ -26,7 +26,7 @@ import styles from './styles/taskGeneralListScreenStyles'
 
 const useStyles = makeStyles(styles)
 
-const TaskGeneralListScreen = (errorTaksList) => {
+const TaskGeneralListScreen = (errorTaskList) => {
   const ExcelFile = ReactExport.ExcelFile
   const dispatch = useDispatch()
   const classes = useStyles()
