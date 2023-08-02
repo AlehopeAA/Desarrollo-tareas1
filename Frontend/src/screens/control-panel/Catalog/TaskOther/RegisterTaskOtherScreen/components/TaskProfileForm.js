@@ -117,8 +117,8 @@ const TaskProfileForm = ({ taskByProfile }) => {
             onChange={(e) => setTaskOther({ ...taskOther, tipo_tarea: e.target.value })}
             required= 'true'
           >
-            <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
             <MenuItem value={'ORDINARIA'}>ORDINARIA</MenuItem>
+            <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
           </Select>
         </FormControl>
       </GridItem>

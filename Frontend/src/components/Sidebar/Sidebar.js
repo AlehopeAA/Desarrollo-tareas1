@@ -38,7 +38,7 @@ import CustomModal from 'components/Modal/CustomModal'
 import SidebarWrapper from './components/SidebarWrapper'
 import { useWindowsSize } from 'shared/customHooks/useWindowsSize'
 import logoMin from 'assets/img/apple-icon.png'
-import { getCollapseStates, getCollapseInitialState, activeRoute } from '../../shared/mappers/routesMappers'
+import { getCollapseStates, getCollapseInitialState, ActiveRoute } from '../../shared/mappers/routesMappers'
 import roles from 'config/roles/roles'
 import { logout } from 'redux/actions/userActions'
 import sidebarStyle from './styles/sidebarStyle'
@@ -176,9 +176,9 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
         )
       }
       const innerNavLinkClasses =
-        classes.collapseItemLink + ' ' + cx({ [' ' + classes[color]]: activeRoute(prop.layout + prop.path) })
+        classes.collapseItemLink + ' ' + cx({ [' ' + classes[color]]: ActiveRoute(prop.layout + prop.path) })
       const navLinkClasses =
-        classes.itemLink + ' ' + cx({ [' ' + classes[color]]: activeRoute(prop.layout + prop.path) })
+        classes.itemLink + ' ' + cx({ [' ' + classes[color]]: ActiveRoute(prop.layout + prop.path) })
       const itemText = classes.itemText + ' ' + cx({ [classes.itemTextMini]: miniActive })
       const collapseItemText = classes.collapseItemText + ' ' + cx({ [classes.collapseItemTextMini]: miniActive })
 

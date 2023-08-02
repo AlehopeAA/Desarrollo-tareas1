@@ -23,7 +23,7 @@ import styles from './styles/acumulativesRegisterStyles'
 
 const useStyles = makeStyles(styles)
 
-const acumulativesRegister = () => {
+const useAcumulativesRegister = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [taskAcumulativesId, setTaskAcumulativesId] = useState('')
@@ -169,4 +169,4 @@ const acumulativesRegister = () => {
   )  
 }
 
-export default acumulativesRegister
+export default useAcumulativesRegister
