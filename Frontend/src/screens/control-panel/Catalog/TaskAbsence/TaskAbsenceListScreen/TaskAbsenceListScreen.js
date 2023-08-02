@@ -26,7 +26,7 @@ import styles from './styles/taskAbsenceListScreenStyles'
 
 const useStyles = makeStyles(styles)
 
-const TaskAbsenceListScreen = () => {
+const TaskAbsenceListScreen = (errorTaskList) => {
   const ExcelFile = ReactExport.ExcelFile
   const dispatch = useDispatch()
   const classes = useStyles()

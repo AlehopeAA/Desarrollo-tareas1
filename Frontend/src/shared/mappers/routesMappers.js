@@ -7,7 +7,7 @@ export const getCollapseInitialState = (routes) => {
   for (let i = 0; i < routes.length; i++) {
     if (routes[i].collapse && getCollapseInitialState(routes[i].views)) {
       return true
-    } else if (location.pathname === routes[i].layout + routes[i].path) {
+    } else if (useLocation.pathname === routes[i].layout + routes[i].path) {
       return true
     }
   }
@@ -32,6 +32,6 @@ export const getCollapseStates = (routes) => {
 }
 
 // verifies if routeName is the one active (in browser input)
-export const activeRoute = (routeName) => {
+export const ActiveRoute = (routeName) => {
   return useLocation().pathname === routeName ? 'active' : ''
 }

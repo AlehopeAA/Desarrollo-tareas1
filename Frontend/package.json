@@ -12,7 +12,7 @@
     "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
-    "@svgr/webpack": "^5.5.0",
+    "@svgr/webpack": "^8.0.1",
     "axios": "^0.21.1",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -109,7 +109,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-append-prepend": "1.0.9",
     "prettier": "2.2.1"
   },

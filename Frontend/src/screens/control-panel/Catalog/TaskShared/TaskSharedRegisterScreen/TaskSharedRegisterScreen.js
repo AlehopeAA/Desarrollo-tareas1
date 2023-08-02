@@ -20,7 +20,7 @@ import styles from './styles/sharedRegisterStyles'
 
 const useStyles = makeStyles(styles)
 
-const sharedRegister = () => {
+const useSharedRegister = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [taskSharedId, setTaskSharedId] = useState('')
@@ -192,4 +192,4 @@ const sharedRegister = () => {
   )  
 }
 
-export default sharedRegister
+export default useSharedRegister

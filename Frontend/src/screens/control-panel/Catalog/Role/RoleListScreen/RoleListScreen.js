@@ -12,6 +12,7 @@ import UpdateRoleModal from './components/UpdateRoleModal'
 import DeleteRoleModal from './components/DeleteModal/DeleteRoleModal'
 import { getRoles } from 'redux/actions/roleActions'
 import styles from './styles/RoleListScreenStyles'
+import ViewRoleInfoModal from './components/ViewInfoModal/ViewRoleInfoModal'
 
 const useStyles = makeStyles(styles)
 
