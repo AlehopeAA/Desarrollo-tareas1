@@ -31,10 +31,15 @@ const TaskProfileForm = ({ taskByProfile }) => {
   const handleCreateTask = (e) => {
     dispatch(filterDuplicateTaskHandle(taskOther.id_tarea))
     if (e.target.checked && taskOther.copyTaskChecked) {
-      setTaskOther({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
-      dispatch(
-        fillCreateTaskHandle({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
-      )
+      if (taskOther.entrada === "SI" && taskOther.cuantificable === "NO") {
+        return;
+      } else {
+        setTaskOther({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
+        dispatch(
+          fillCreateTaskHandle({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
+        )
+      }
+
     } else if (e.target.checked) {
       setTaskOther({ ...taskOther, newTaskChecked: e.target.checked })
       dispatch(
@@ -115,7 +120,7 @@ const TaskProfileForm = ({ taskByProfile }) => {
             disabled={!taskOther.newTaskChecked}
             label='task-type'
             onChange={(e) => setTaskOther({ ...taskOther, tipo_tarea: e.target.value })}
-            required= 'true'
+            required='true'
           >
             <MenuItem value={'ORDINARIA'}>ORDINARIA</MenuItem>
             <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
@@ -124,7 +129,7 @@ const TaskProfileForm = ({ taskByProfile }) => {
       </GridItem>
       <GridItem xs={12}>
         <GridContainer>
-        <GridItem xs={12} md={6}>
+          <GridItem xs={12} md={6}>
             <FormControl fullWidth>
               <InputLabel id='indicador'>Indicador</InputLabel>
               <Select

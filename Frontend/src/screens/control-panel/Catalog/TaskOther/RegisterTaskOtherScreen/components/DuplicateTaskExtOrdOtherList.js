@@ -18,7 +18,7 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
   const dispatch = useDispatch()
 
   const [profilesData, setProfilesData] = useState([])
-
+  const [errorMsg, setErrorMsg] = useState('');
   const { successProfileList, loadingProfileList, profiles } = useSelector((state) => state.profileList)
   const { createTask, sameTask } = useSelector((state) => state.handleDuplicateTask)
   const [alert, setAlert] = useState(null)
@@ -89,8 +89,11 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
     }
   }
 
-  const handleData = (e) => {
+  const handleData = async(e) => {
     e.preventDefault()
+    if(createTask[0].entrada === 'SI' && createTask[0].cuantificable === 'NO'){
+      return setErrorMsg('Si entrada es SI, cuantificable ha de ser SI')
+    }
     const data = {
       profilesData,
       createTask,
@@ -130,6 +133,11 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
           {errorTaskRegister && (
             <GridItem xs={12}>
               <SnackbarContent message={errorTaskRegister} color='danger' />
+            </GridItem>
+          )}
+          {errorMsg && createTask[0].entrada === 'SI' && createTask[0].cuantificable === 'NO' && (
+            <GridItem xs={12}>
+              <SnackbarContent message={errorMsg} color='danger' />
             </GridItem>
           )}
           <GridItem xs={12} style={{ textAlign: 'end' }}>

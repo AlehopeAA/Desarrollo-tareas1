@@ -106,6 +106,10 @@ const CreateTaskOther = ({ taskType, setTaskType }) => {
     if (profilesData.length === 0) {
       return setProfileError('Por favor seleccione un Perfil.')
     }
+    if(taskOther.entrada === 'SI' && taskOther.cuantificable === 'NO'){
+      return setProfileError("Si entrada es SI, cuantificable ha de ser SI");
+      
+    }
 
     dispatch(registerTaskOther({ ...taskOther, profilesData }))
   }
@@ -115,6 +119,8 @@ const CreateTaskOther = ({ taskType, setTaskType }) => {
     } = e
     setCodTrazability(value)
     setTaskOther({ ...taskOther, codigo_trazabilidad: e.target.value })
+
+    
   }
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -306,6 +312,13 @@ const CreateTaskOther = ({ taskType, setTaskType }) => {
           </GridContainer>
         )}
         {profileError && profilesData.length === 0 && (
+          <GridContainer>
+            <GridItem xs={12}>
+              <SnackbarContent message={profileError} color='danger' />
+            </GridItem>
+          </GridContainer>
+        )}
+        {profileError && taskOther.entrada === 'SI' && taskOther.cuantificable === 'NO' && (
           <GridContainer>
             <GridItem xs={12}>
               <SnackbarContent message={profileError} color='danger' />

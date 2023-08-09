@@ -26,11 +26,13 @@ const registerTask = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Debes seleccionar al menos un perfil para asignarle la tarea' })
   }
 
+  
+
   profilesIds = profilesData.map((item) => item.id_perfil)  
 
   if (createTask.length > 0) {
     const descriptionTasks = createTask.map((task) => `'${task.descripcion_tarea}'`)
-
+    console.log(descriptionTasks.toString())
     const tasksExistQuery = `
     SELECT * FROM tareas 
     INNER JOIN tareas_perfil 
@@ -43,9 +45,12 @@ const registerTask = asyncHandler(async (req, res) => {
 
     const taskExist = await queryPromise(tasksExistQuery)
 
+ 
     if (taskExist.length > 0) {
-      return res.status(400).json({ message: 'ya existe una tarea con esa descripción en el perfil seleccionado' })
+      return res.status(400).json({ message: 'Ya existe una tarea con esa descripción en el perfil seleccionado' })
     }
+
+    
   }
 
   if (sameTask.length > 0) {
@@ -56,7 +61,7 @@ const registerTask = asyncHandler(async (req, res) => {
         findTasksProfile = `SELECT * FROM tareas_perfil WHERE tareas_perfil.id_tarea = ${sameTasksIds[j]} and tareas_perfil.id_perfil = ${profilesIds[i]} `
         taskExisting = await queryPromise(findTasksProfile)
       if(taskExisting.length > 0){
-        return res.status(400).json({message: 'ya existe una tarea con esa descripción en el perfil seleccionado'})
+        return res.status(400).json({message: 'Ya existe una tarea con esa descripción en el perfil seleccionado'})
       }
         if (!taskExisting.length || taskExisting.length == 0) {
           profilesAndTasksMerged.push(`('${sameTasksIds[j]}'`, `'${profilesIds[i]}')`)
@@ -80,6 +85,7 @@ const registerTask = asyncHandler(async (req, res) => {
         '${task.dificultad}',
         '${task.acumulativa}')
         `
+        
       newTasksValues.push(insertTaskValues)
     })
   }
@@ -100,6 +106,7 @@ const registerTask = asyncHandler(async (req, res) => {
     ${newTasksValues.toString()}
   `
   if (createTask.length > 0) {
+    
     taskSaved = await queryPromise(insertTaskQuery)
     const maxIdTaskQuery = `
     SELECT MAX(id_tarea) from tareas 
