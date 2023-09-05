@@ -30,7 +30,36 @@ import {
   TEAM_WORK_HISTORICAL_REQUEST,
   TEAM_WORK_HISTORICAL_SUCCESS,
   TEAM_WORK_HISTORICAL_FAIL,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_REQUEST,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE__SUCCESS,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_FAIL,
 } from '../constants/teamWorkConstants'
+
+export const registerTeamWorkProfileByValidatorOrResponsible = (teamWork) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_REQUEST })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+        'Cache-Control': 'no-cache',
+      },
+    }
+
+    const { data } = await axios.post('/api/equipostrabajo/validadores/responsablesvalidadoresprofile', teamWork, config)
+
+    dispatch({ type: PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE__SUCCESS, payload: data })
+  } catch (error) {
+    dispatch({
+      type: PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
 
 export const registerTeamWorkByResponsible = (teamWork) => async (dispatch, getState) => {
   try {
@@ -150,7 +179,7 @@ export const getTeamWorks = () => async (dispatch, getState) => {
         'Cache-Control': 'no-cache',
       },
     }
-
+    console.log(data)
     const { data } = await axios.get('/api/equipostrabajo', config)
 
     dispatch({ type: TEAM_WORK_LIST_SUCCESS, payload: data })

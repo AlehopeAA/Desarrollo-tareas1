@@ -169,6 +169,7 @@ const {
   getTeamsWorkByValidator,
   registerOrUpdateTeamWorkByResponsable,
   registerOrUpdateTeamWorkByValidator,
+  asignedProfilesToValidatorOrResponsable,
 } = require('./teamsWork')
 
 const { getActivityInfo, getActivities, getActivitiesRoles, registerActivity, updateActivity, deleteActivity, getActivitiesByJobPositionId, } = require('./activities')
@@ -423,6 +424,7 @@ module.exports = {
   getTeamsWorkByValidator,
   registerOrUpdateTeamWorkByResponsable,
   registerOrUpdateTeamWorkByValidator,
+  asignedProfilesToValidatorOrResponsable,
 
   getActivityInfo,
   getActivities,

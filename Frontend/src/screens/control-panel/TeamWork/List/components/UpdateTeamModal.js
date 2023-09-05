@@ -47,14 +47,23 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
   const [profilesDataError, setProfileError] = useState('')
   const [validators, setValidators] = useState([])
   const [responsibles, setResponsibles] = useState([])
-  const [filteredPerfiles , setSharedTasks] = useState([])
-  const [result, setResult] = useState([])
-  const [secondAlertMessage, setSecondAlertMessage] = useState('')
   const { loadingUserDetails, userDetailData } = useSelector((state) => state.userDetails)
-  const [tareasCompartidas, setTareasCompartidas] = useState(false)
   const { loadingTeamWorkUpdate, successTeamWorkUpdate, errorTeamWorkUpdate } = useSelector(
     (state) => state.teamWorkUpdate
   )
+
+ 
+
+  const [mensajeAlertaActiviadesCompartidasBorradas, setMensajeAlertaActiviadesCompartidasBorradas] = useState('')
+  const [mensajeAlertaActiviadesCompartidasNuevas, setMensajeAlertaActiviadesCompartidasNuevas] = useState('')
+
+  const [codigosPerfilIniciales , setCodigosPerfilIniciales] = useState([])
+
+  const [tareasCompartidasEliminadasBool, setTareasCompartidasEliminadasBool] = useState(false)
+  const [tareasCompartidasAñadidasBool, setTareasCompartidasAñadidasBool] = useState(false)
+
+
+  // const [result, setResult] = useState([])
 
   useEffect(() => {
     dispatch(getUserById(showUpdateTeam.id_puesto))
@@ -62,17 +71,16 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
 
   useEffect(() => {
     if (userDetailData) {
-      console.log(userDetailData)
       setUser(userDetailData.user)
       setProfilesData(userDetailData.perfiles)
       setResponsibles(userDetailData.responsables)
       setValidators(userDetailData.validadores)
       
-      const filteredPerfiles = userDetailData.perfiles.filter(profile => profile.count_tareas_compartidas > 0 )
-      const codigosPerfil = filteredPerfiles.map(profile => profile.codigo_perfil)
+      const perfilesTareasCompartidas = userDetailData.perfiles.filter(profile => profile.count_tareas_compartidas > 0 )
+      const codigosPerfil = perfilesTareasCompartidas.map(profile => profile.codigo_perfil)
 
-      setSharedTasks(codigosPerfil)
-      console.log(codigosPerfil)
+      setCodigosPerfilIniciales(codigosPerfil)
+      console.log("Códigos perfil con tareas compartidas inicialmente : \n" + codigosPerfil)
     }
   }, [userDetailData])
 
@@ -106,8 +114,7 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
 
   const hideAlert = () => {
     alert(null)
-    console.log(tareasCompartidas)
-    if(tareasCompartidas){
+    if(tareasCompartidasEliminadasBool){
       alert(
         <SweetAlert
           info
@@ -116,12 +123,23 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
           onConfirm={() => alert(null)}        
           confirmBtnCssClass={classes.confirmBtnCssClass}
         >
-        {secondAlertMessage}
+        {mensajeAlertaActiviadesCompartidasBorradas}
+        </SweetAlert>
+      )
+    }if(tareasCompartidasAñadidasBool){
+      alert(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => alert(null)}        
+          confirmBtnCssClass={classes.confirmBtnCssClass}
+        >
+        {mensajeAlertaActiviadesCompartidasNuevas}
         </SweetAlert>
       )
     }
   }
-
 
   const updateTeamHandler = (e) => {
     e.preventDefault()
@@ -135,31 +153,53 @@ const UpdateTeamModal = ({ handleCloseModal, updateTeamModal, showUpdateTeam, al
       validators,
     }
     console.log(JSON.stringify(profilesData))
-    const profileDeleteSharedTask = filteredPerfiles.filter(codigo => !profilesData.some(profile => profile.codigo_perfil === codigo))
-    console.log(profileDeleteSharedTask)
-    setResult(profileDeleteSharedTask)
+    const codigosPerfilTareaCompartidaEliminada = codigosPerfilIniciales.filter(codigo => !profilesData.some(profile => profile.codigo_perfil === codigo))
+    
+    const newSharedTaskProfiles = profilesData.filter(profile => profile.count_tareas_compartidas > 0 && !codigosPerfilIniciales.includes(profile.codigo_perfil))  
+    const newSharedTaskProfileCodes = newSharedTaskProfiles.map(profile => profile.codigo_perfil)
 
-    var message = "";
-    var perfilesTareasCompartidas = ""
-    if(profileDeleteSharedTask.length > 0){
-      console.log("tiene mas de una ")
-      console.log(profileDeleteSharedTask)
-      profileDeleteSharedTask.forEach((profile)=>
+    console.log(newSharedTaskProfileCodes)
+    console.log(' nuevas : '  + JSON.stringify(newSharedTaskProfileCodes))
+    // setResult(codigosPerfilTareaCompartidaEliminada)
+
+    var messageTareasCompartidasEliminadas = "";
+    var perfilesTareasCompartidasEliminadas = ""
+    
+    var messageTareasCompartidasNuevas = "";
+    var perfilesTareasCompartidasNuevas = ""
+
+    if(codigosPerfilTareaCompartidaEliminada.length > 0){
+      codigosPerfilTareaCompartidaEliminada.forEach((profile)=>
       {
-        perfilesTareasCompartidas += ` ${profile},`
+        perfilesTareasCompartidasEliminadas += ` ${profile},`
       });
     }
-    message = `El perfil${perfilesTareasCompartidas} del trabajador modificado incluía alguna tarea compartida,
+    messageTareasCompartidasEliminadas = `El perfil${perfilesTareasCompartidasEliminadas} del trabajador modificado incluía alguna tarea compartida,
      por favor revise el reparto de % de responsabilidad de sus trabajadores, considerando a este nuevo trabajador.` 
-    console.log(message)
-    setSecondAlertMessage(message)
+    console.log(messageTareasCompartidasEliminadas)
+    setMensajeAlertaActiviadesCompartidasBorradas(messageTareasCompartidasEliminadas)
 
-    if(perfilesTareasCompartidas === ''){
-      setTareasCompartidas(false)
-      console.log("poa aqyuuuuu")
+    if(newSharedTaskProfileCodes.length > 0){
+      newSharedTaskProfileCodes.forEach((profile) =>{
+        perfilesTareasCompartidasNuevas += ` ${profile},`
+      })
+    }
+
+    messageTareasCompartidasNuevas = `Algunas tareas del perfil${perfilesTareasCompartidasNuevas} es una tarea compartida por favor revise el reparto de % de responsabilidad
+    de sus trabajadores, considerando a este trabajador.\n`
+    console.log(messageTareasCompartidasNuevas)
+    setMensajeAlertaActiviadesCompartidasNuevas(messageTareasCompartidasNuevas)
+
+    if(perfilesTareasCompartidasEliminadas === ''){
+      setTareasCompartidasEliminadasBool(false)
     }else {
-      setTareasCompartidas(true)
-      console.log(tareasCompartidas + " llega por aqui")
+      setTareasCompartidasEliminadasBool(true)
+    }
+
+    if(perfilesTareasCompartidasNuevas === ''){
+      setTareasCompartidasAñadidasBool(false)
+    }else {
+      setTareasCompartidasAñadidasBool(true)
     }
     
     dispatch(teamWorkUpdateInfo(data))

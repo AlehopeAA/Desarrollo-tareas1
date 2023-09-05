@@ -12,6 +12,12 @@ const getJobPositionsByRole = asyncHandler(async (req, res) => {
 
   const isAdminRole = permiso.indexOf(ADMIN_ROLE) !== -1
   const isGestorPerfilesRole = permiso.indexOf(GESTOR_DE_PERFILES_ROLE) !== -1
+  console.log("roleName: " + roleName  + "\n")
+  console.log("id_puesto: " + id_puesto  + "\n")
+  console.log("permiso: " + permiso  + "\n")
+  console.log("isAdminRole: " + isAdminRole  + "\n")
+  console.log("isGestorPerfilesRole: " + isGestorPerfilesRole  + "\n")
+
   let query = ''
 
   if (isAdminRole || (isGestorPerfilesRole && roleName == RESPONSABLE_ROLE) || (isGestorPerfilesRole && roleName == VALIDADOR_ROLE) ) {

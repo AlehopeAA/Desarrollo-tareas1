@@ -39,6 +39,10 @@ import {
   TEAM_WORK_HISTORICAL_SUCCESS,
   TEAM_WORK_HISTORICAL_FAIL,
   TEAM_WORK_HISTORICAL_RESET,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_REQUEST,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE__SUCCESS,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_FAIL,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_RESET,
 } from '../constants/teamWorkConstants'
 
 export const teamWorkRegisterByResponsibleReducer = (state = {}, action) => {
@@ -51,12 +55,33 @@ export const teamWorkRegisterByResponsibleReducer = (state = {}, action) => {
         successTeamWorkByResponsibleRegister: true,
         teamWorkByResponsibleRegisterData: action.payload,
       }
-    case TEAM_WORK_REGISTER_BY_RESPONSIBLE_FAIL:
+    case PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_FAIL:
       return {
         loadingTeamWorkByResponsibleRegister: false,
         errorTeamWorkByResponsibleRegister: action.payload,
       }
     case TEAM_WORK_REGISTER_BY_RESPONSIBLE_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const profileRegisterByValidatorReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_REQUEST:
+      return { loadingProfileByValidatorResponsibleRegister: true }
+    case PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE__SUCCESS:
+      return {
+        loadingProfileByValidatorResponsibleRegister: false,
+        successProfileByValidatorResponsibleRegister: true,
+        ProfileByValidatorResponsibleData: action.payload,
+      }
+    case TEAM_WORK_REGISTER_BY_RESPONSIBLE_FAIL:
+      return {
+        loadingProfileByValidatorResponsibleRegister: false,
+        errorTProfileByValidatorResponsibleRegister: action.payload,
+      }
+    case PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_RESET:
       return {}
     default:
       return state

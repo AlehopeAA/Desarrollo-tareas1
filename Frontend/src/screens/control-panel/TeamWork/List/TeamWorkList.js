@@ -63,6 +63,11 @@ const TeamWorkList = () => {
   const [viewListModal, setViewListModal] = useState(true)
   const [showHistorical, setShowHistorical] = useState({})
 
+  const [perfilesTareasCompartidasBool, setPerfilesTareasCompartidas] = useState(false)
+  const [mensajeAlertaActiviadesCompartidas, setMensajeAlertaActiviadesCompartidas] = useState("")
+
+
+
   const { loadingTeamWorkList, successTeamWorkList, teamWorkListData, errorTeamWorkList } = useSelector(
     (state) => state.teamWorkList
   )
@@ -76,6 +81,8 @@ const TeamWorkList = () => {
   const profileManagerPermission = userInfo?.permiso.includes(roles.GESTOR_DE_PERFILES_ROLE) ? true : false
   const isAdminOrProfileManager = adminPermission || profileManagerPermission
 
+  console.log(userInfo)
+  console.log(profileManagerPermission)
   useEffect(() => {
     if (!teamWorkListData && !errorTeamWorkList) {
       dispatch(getTeamWorks())
@@ -96,7 +103,9 @@ const TeamWorkList = () => {
           success
           style={{ display: 'block', marginTop: '-100px' }}
           title='ELIMINADO'
-          onConfirm={() => setAlert(null)}
+          onConfirm={() => {setAlert(null) 
+            actualizarEstados(userInfo)
+            }}
           onCancel={() => setAlert(null)}
         >
           El puesto de trabajo sido eliminado correctamente
@@ -168,7 +177,7 @@ const TeamWorkList = () => {
                   <Visibility />
                 </Tooltip>
               </Button>
-              {isAdminOrProfileManager && (
+              {adminPermission && (
               <Button
                 justIcon
                 round
@@ -268,6 +277,7 @@ const TeamWorkList = () => {
 
   const handleActiveModal = (data) => {
     setActiveModal(true)
+    console.log(data)
     setActiveModalData(data)
   }
   const handleCloseActiveModal = () => {
@@ -323,19 +333,82 @@ const TeamWorkList = () => {
       )
       return dispatch(userUpdateInfo({ ...jobPosition, activo: 'SI' }))
     } else {
+      
+      actualizarEstados(jobPosition)
+     setAlert(
+      <SweetAlert
+        success
+        style={{ display: 'block', marginTop: '-100px' }}
+        title='Guardado!'
+        onConfirm={() => {
+          setAlert(null)
+          alertPerfilActividadesCompartidas()
+        }}
+        onCancel={() => {
+          setAlert(null)
+          alertPerfilActividadesCompartidas()
+        }}
+        confirmBtnCssClass={classes.button + ' ' + classes.success}
+      >
+        El puesto ha sido desactivado correctamente
+      </SweetAlert>
+    )
+      return dispatch(userUpdateInfo({ ...jobPosition, activo: 'NO', fecha_baja: format(new Date(), 'yyyy-MM-dd') }))
+    }
+  }
+
+  useEffect(() => {
+    if (perfilesTareasCompartidasBool) {
+      alertPerfilActividadesCompartidas()
+    }
+  }, [perfilesTareasCompartidasBool, mensajeAlertaActiviadesCompartidas])
+
+  const alertPerfilActividadesCompartidas = () => {
+    console.log(perfilesTareasCompartidasBool + "popopopopo" + mensajeAlertaActiviadesCompartidas)
+    if(perfilesTareasCompartidasBool){
       setAlert(
         <SweetAlert
-          success
+          info
           style={{ display: 'block', marginTop: '-100px' }}
-          title='Guardado!'
-          onConfirm={() => setAlert(null)}
+          title='Aviso!'
+          onConfirm={() => {
+          // Restablecer los estados a sus valores iniciales
+          setPerfilesTareasCompartidas(false);
+          setMensajeAlertaActiviadesCompartidas("");
+          setAlert(null);
+        }}
           onCancel={() => setAlert(null)}
           confirmBtnCssClass={classes.button + ' ' + classes.success}
         >
-          El puesto ha sido desactivado correctamente
+         {mensajeAlertaActiviadesCompartidas}
         </SweetAlert>
       )
-      return dispatch(userUpdateInfo({ ...jobPosition, activo: 'NO', fecha_baja: format(new Date(), 'yyyy-MM-dd') }))
+    }else{
+      setAlert(null)
+    }
+  }
+
+  const actualizarEstados = (jobPosition) => {
+    var messageTareasCompartidas = "";
+    var perfilesTareasCompartidas = ""
+    console.log( jobPosition)
+    jobPosition.tareas_compartidas.forEach((profile)=>
+    {
+      if (profile.count_tareas_compartidas > 0) {
+        perfilesTareasCompartidas += ` ${profile.codigo_perfil},`
+      }
+    });
+    console.log(perfilesTareasCompartidas)
+    console.log(perfilesTareasCompartidas.length)
+  
+    messageTareasCompartidas = `El trabajador incativado tenía alguna tarea compartida en el perfil ${perfilesTareasCompartidas}
+    por favor revise el reparto de % de responsabilidad de los trabajadores que continúan desarrollando esta/s tareas/s compartidas/s.` 
+   if(perfilesTareasCompartidas.length > 0){
+      setMensajeAlertaActiviadesCompartidas(messageTareasCompartidas)
+      console.log(messageTareasCompartidas)
+  
+      setPerfilesTareasCompartidas(perfilesTareasCompartidas)
+      console.log(perfilesTareasCompartidasBool)
     }
   }
 

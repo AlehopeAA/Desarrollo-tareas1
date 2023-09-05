@@ -33,6 +33,7 @@ const ViewTeamModal = ({ handleCloseModal, viewTeamModal, showViewTeam }) => {
 
   useEffect(() => {
     dispatch(getUserById(showViewTeam.id_puesto))
+    console.log(userDetailData)
   }, [])
 
   useEffect(() => {
@@ -212,14 +213,14 @@ const ViewTeamModal = ({ handleCloseModal, viewTeamModal, showViewTeam }) => {
                   <Box className={classes.boxContainerbigs}>
                     <h4 style={{ textAlign: 'center', fontWeight: 400, color: '#336699' }}>Tareas</h4>
                     <List>
-                      {userDetailData.tareas && userDetailData.tareas.length > 0 ? (
+                      {userDetailData.tareas && userDetailData.tareas.length > 0 ? ( //doit
                         userDetailData.tareas.map((tarea) => (
                           <ListItem key={tarea.id_tarea}>
                             <ListItemButton dense>
                               <ListItemIcon>
                                 <Checkbox edge='start'  checked={tarea.favorita === "SI"}  disableRipple />
                               </ListItemIcon>
-                              <ListItemText primary={`${tarea.descripcion_tarea}`} />
+                              <ListItemText primary={`${tarea.descripcion_tarea}`} secondary ={`${tarea.tipo_tarea}`}/>
                             </ListItemButton>
                           </ListItem>
                         ))

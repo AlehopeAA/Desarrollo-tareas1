@@ -168,6 +168,7 @@ import {
   teamWorkRegisterByValidatorReducer,
   teamWorkRegisterByPermissionReducer,
   teamWorkHistoricalListReducer,
+  profileRegisterByValidatorReducer,
 } from './teamWorkReducer'
 
 import {
@@ -359,6 +360,7 @@ export default combineReducers({
   teamWorkRegisterByResponsible: teamWorkRegisterByResponsibleReducer,
   teamWorkRegisterByPermission: teamWorkRegisterByPermissionReducer,
   teamWorkRegisterByValidator: teamWorkRegisterByValidatorReducer,
+  profileRegisterByValidator: profileRegisterByValidatorReducer,
   teamWorksByResponsible: teamWorksByResponsibleReducer,
   teamWorksByValidator: teamWorksByValidatorReducer,
   teamWorkHistoricalList: teamWorkHistoricalListReducer,

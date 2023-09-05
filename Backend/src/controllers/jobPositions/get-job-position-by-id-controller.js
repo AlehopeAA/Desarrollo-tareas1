@@ -76,7 +76,7 @@ const favoritesTasksQuery = `
   ORDER BY tareas.descripcion_tarea`
 
   const notFavoritesTasksQuery = `
-  SELECT tareas.*, "NO" favorita FROM tareas
+  SELECT tareas.*, tipos_tarea.tipo_tarea, "NO" favorita FROM tareas
   INNER JOIN tipos_tarea ON tareas.id_tipo_tarea = tipos_tarea.id_tipo_tarea 
   WHERE id_tarea NOT IN (SELECT tareas_favoritas.id_tarea FROM tareas_favoritas WHERE tareas_favoritas.id_puesto = ${id})
   AND tareas.activo='SI'
