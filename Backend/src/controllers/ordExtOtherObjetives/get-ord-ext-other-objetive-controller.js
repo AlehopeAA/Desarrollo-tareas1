@@ -18,6 +18,7 @@ const getOrdExtOtherObjetives = asyncHandler(async (req, res) => {
   const tasksWithoutRepeating = []
 
   if (isAdminOrSuper) {
+    
      const totalObjetivesQuery = `
        SELECT objetivos.*, tareas.descripcion_tarea, tareas.compartida, tareas.dificultad as tardif, concat(perfiles.codigo_perfil, ', ') as codigo_perfil
        FROM objetivos 
@@ -51,8 +52,9 @@ const getOrdExtOtherObjetives = asyncHandler(async (req, res) => {
      })
 
   } else if (isManager) {
+    console.log(id_puesto)
      const objetivesQuery = `
-       SELECT objetivos.*, tareas.descripcion_tarea, tareas.compartida, tareas.dificultad as tardif, perfiles.codigo_perfil
+       SELECT objetivos.*,tareas.indicador, tareas.descripcion_tarea, tareas.compartida, tareas.dificultad as tardif, perfiles.codigo_perfil
        FROM objetivos 
        INNER JOIN tareas ON objetivos.id_tarea = tareas.id_tarea 
        INNER JOIN tipos_tarea ON tareas.id_tipo_tarea = tipos_tarea.id_tipo_tarea     

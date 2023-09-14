@@ -199,6 +199,7 @@ import {
   objetiveSpecificListReducer,
   objetivesSpecificDeleteReducer,
   objetivesSpecificUpdateReducer,
+  objetivesByTaskReducer,
 } from './objetivesSpecificsReducer'
 
 import {
@@ -408,6 +409,7 @@ export default combineReducers({
   objetiveSpecificList: objetiveSpecificListReducer,
   objetivesSpecificDelete: objetivesSpecificDeleteReducer,
   objetivesSpecificUpdate: objetivesSpecificUpdateReducer,
+  objetivesByTask: objetivesByTaskReducer,
   objetiveOrdExtOtherRegister: objetiveOrdExtOtherRegisterReducer,
   objetiveOrdExtOtherList: objetiveOrdExtOtherListReducer,
   objetiveHistoricalList: objetiveHistoricalListReducer,

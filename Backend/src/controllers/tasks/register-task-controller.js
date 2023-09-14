@@ -7,6 +7,7 @@ const db = require('../../config/mysql/db')
 // @route   POST /api/tareas
 // @access  Private/Admin
 const registerTask = asyncHandler(async (req, res) => {
+  console.log(req)
   const {
     descripcion_tarea,
     id_tipo_tarea,
@@ -20,20 +21,26 @@ const registerTask = asyncHandler(async (req, res) => {
     dificultad,
     acumulativa,
   } = req.body
+  const test =1111
 
   db.query(
-    `INSERT INTO tareas (
-        descripcion_tarea,
-        id_tipo_tarea,
-        activo,
-        fecha_alta,
-        fecha_baja,
-        cuantificable,
-        indicador,
-        entrada,
-        compartida,
-        dificultad,
-        acumulativa) VALUES ('${descripcion_tarea}' , '${id_tipo_tarea}', '${activo}',  '${fecha_baja}', '${fecha_alta}', '${cuantificable}','${indicador}', '${entrada}', '${compartida}', '${dificultad}', '${acumulativa}')`,
+     `INSERT INTO tareas (
+         descripcion_tarea,
+         id_tipo_tarea,
+         activo,
+         fecha_alta,
+         fecha_baja,
+         cuantificable,
+         indicador,
+         entrada,
+         compartida,
+         dificultad,
+         acumulativa) VALUES ('${descripcion_tarea}' , '${id_tipo_tarea}', '${activo}',  '${fecha_baja}', '${fecha_alta}', '${cuantificable}','${indicador}', '${entrada}', '${compartida}', '${dificultad}', '${acumulativa}')
+  `
+,
+
+
+
 
     (err, result) => {
       if (err) {
@@ -46,6 +53,9 @@ const registerTask = asyncHandler(async (req, res) => {
       }
     }
   )
+
+
+
 })
 
 module.exports = registerTask

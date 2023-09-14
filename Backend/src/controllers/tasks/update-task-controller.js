@@ -7,6 +7,7 @@ const db = require('../../config/mysql/db')
 // @route   PUT /api/tareas/:id
 // @access  Private/Admin
 const updateTask = asyncHandler(async (req, res) => {
+  console.log('a ver qué pasa ya')
   const id = req.params.id_tarea
   const {
     descripcion_tarea,
@@ -35,6 +36,8 @@ const updateTask = asyncHandler(async (req, res) => {
 
   const keysQuery = ['descripcion_tarea = ?']
   const valuesQuery = [`${descripcion_tarea}`]
+
+console.log(compartida)
 
   variableValues.map((data) => {
     if (data.v_activo) {

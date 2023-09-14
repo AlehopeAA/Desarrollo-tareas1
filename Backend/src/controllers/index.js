@@ -202,6 +202,7 @@ const {
   getSpecificObjetives,
   updateSpecificObjetives,
   deleteSpecificObjetive,
+  objetivos,
 } = require('./specificObjetives')
 
 const {
@@ -454,6 +455,7 @@ module.exports = {
   getSpecificObjetives,
   updateSpecificObjetives,
   deleteSpecificObjetive,
+  objetivos,
 
   registerOrdExtOther,  
   getOrdExtOtherObjetives,

@@ -31,11 +31,16 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 }
 fuzzyTextFilterFn.autoRemove = (val) => !val
 
-const ReactTable = ({ columns, data, numFilas }) => {
+const ReactTable = ({ columns, data, numFilas, color }) => {
   const classes = useStyles()
 
+  
   const [numberOfRows, setNumberOfRows] = useState(numFilas ? numFilas : 10)
   const [pageSelect, handlePageSelect] = useState(0)
+  
+
+  console.log(data)
+  
 
   const filterTypes = useMemo(
     () => ({
@@ -189,7 +194,7 @@ const ReactTable = ({ columns, data, numFilas }) => {
         >
           <thead className='rt-thead -header'>
             {headerGroups.map((headerGroup) => (
-              <><tr {...headerGroup.getHeaderGroupProps()} className='rt-tr'>
+              <><tr {...headerGroup.getHeaderGroupProps()} className='rt-tr' >
                 {headerGroup.headers.map((column, key) => (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
@@ -231,16 +236,24 @@ const ReactTable = ({ columns, data, numFilas }) => {
           <tbody {...getTableBodyProps()} className='rt-tbody' style={{ minWidth: 'min-content' }}>
             {page.map((row, i) => {
               prepareRow(row)
+              console.log(row.original)
+           
+              
               return (
+                
                 <tr
+                  
                   {...row.getRowProps()}
                   className={classnames('rt-tr', { ' -odd': i % 2 === 0 }, { ' -even': i % 2 === 1 })}
                 >
+                  {console.log(row.original)}
                   {row.cells.map((cell) => {
                     const {
                       props: { value },
                     } = cell.render('Cell')
                     return (
+
+                      
                       <td
                         {...cell.getCellProps()}
                         className='rt-td'
@@ -251,6 +264,9 @@ const ReactTable = ({ columns, data, numFilas }) => {
                           display: 'inline',
                           justifyContent: 'center',
                           alignItems: 'center',
+                          background: row.original.indicador == 'SI' && row.original.porcentaje_entrada_maximo == null && row.original.porcentaje_entrada_medio == null 
+                          && row.original.porcentaje_entrada_minimo == null && row.original.porcentaje_jornada_maximo == null && row.original.porcentaje_jornada_medio == null
+                          && row.original.porcentaje_jornada_minimo == null? 'rgba(255,0,0,0.5)' : ''
                         }}
                       >
                         {value == 0 ? 0 : !value ? '-' : cell.render('Cell')}
