@@ -59,6 +59,9 @@ import {
   USER_REGISTER_FAVORITES_REQUEST,
   USER_REGISTER_FAVORITES_SUCCESS,
   USER_REGISTER_FAVORITES_FAIL,
+  USER_SHARED_TASKS_COUNT_REQUEST,
+  USER_SHARED_TASKS_COUNT_SUCCESS,
+  USER_SHARED_TASKS_COUNT_FAIL,
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -94,6 +97,26 @@ export const userRegisterReducer = (state = {}, action) => {
       }
     case USER_REGISTER_RESET:
       return {}
+    default:
+      return state
+  }
+}
+
+export const userSharedTasksCountReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_SHARED_TASKS_COUNT_REQUEST:
+      return { loadingUserSharedTaskCount : true }
+    case USER_SHARED_TASKS_COUNT_SUCCESS:
+      return {
+        loadingUserSharedTaskCount: false,
+        successUserSharedTaskCount: true,
+        countUserSharedTaskCount: action.payload,
+      }
+    case USER_SHARED_TASKS_COUNT_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
     default:
       return state
   }

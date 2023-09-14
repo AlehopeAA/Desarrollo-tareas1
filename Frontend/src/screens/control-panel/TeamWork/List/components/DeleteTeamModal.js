@@ -9,14 +9,21 @@ import GridContainer from 'components/Grid/GridContainer'
 import GridItem from 'components/Grid/GridItem'
 import DesactiveTeamModal from './DesactiveTeamModal'
 import { deleteTeamWork } from 'redux/actions/teamWorkActions'
+import SweetAlert from 'react-bootstrap-sweetalert'
+
 
 const useStyles = makeStyles(styles)
 
 const DeleteTeamModal = ({ handleCloseDeleteTeamModal, deleteTeamModal, showDeleteTeamInfo, alert }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-
+  console.log(showDeleteTeamInfo)
   const [desactiveTeamModal, setDesactiveTeamModal] = useState(false)
+
+  const [perfilesTareasCompartidasBool, setPerfilesTareasCompartidas] = useState(false)
+  const [mensajeAlertaActiviadesCompartidas, setMensajeAlertaActiviadesCompartidas] = useState("")
+    const [alertDelete, setAlertDelete] = useState(null)
+
 
   const { successTeamWorkDelete } = useSelector((state) => state.teamWorkDelete)
   useEffect(() => {
@@ -26,13 +33,66 @@ const DeleteTeamModal = ({ handleCloseDeleteTeamModal, deleteTeamModal, showDele
   }, [successTeamWorkDelete])
   const handleDeleteTeam = (e) => {
     e.preventDefault()
+    console.log("Pasa por aqui?")
+    actualizarEstados(showDeleteTeamInfo)
     dispatch(deleteTeamWork(showDeleteTeamInfo.id_puesto))
   }
 
   const handleCloseDesactiveTeamModal = () => {
     setDesactiveTeamModal(false)
     handleCloseDeleteTeamModal()
+    console.log("se cierra el modal ??")
   }
+
+  const actualizarEstados = (jobPosition) => {
+    var messageTareasCompartidas = "";
+    var perfilesTareasCompartidas = ""
+    console.log( jobPosition)
+    jobPosition.tareas_compartidas.forEach((profile)=>
+    {
+      if (profile.count_tareas_compartidas > 0) {
+        perfilesTareasCompartidas += ` ${profile.codigo_perfil},`
+      }
+    });
+    console.log(perfilesTareasCompartidas)
+    console.log(perfilesTareasCompartidas.length)
+  
+    messageTareasCompartidas = `El trabajador incativado tenía alguna tarea compartida en el perfil ${perfilesTareasCompartidas}
+    por favor revise el reparto de % de responsabilidad de los trabajadores que continúan desarrollando esta/s tareas/s compartidas/s.` 
+   if(perfilesTareasCompartidas.length > 0){
+      setMensajeAlertaActiviadesCompartidas(messageTareasCompartidas)
+      console.log(messageTareasCompartidas)
+  
+      setPerfilesTareasCompartidas(perfilesTareasCompartidas)
+      console.log(perfilesTareasCompartidasBool)
+    }
+  }
+  const alertPerfilActividadesCompartidas = () => {
+    console.log(perfilesTareasCompartidasBool + "popopopopo" + mensajeAlertaActiviadesCompartidas)
+    if(perfilesTareasCompartidasBool){
+      setAlertDelete(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => {
+          // Restablecer los estados a sus valores iniciales
+          setPerfilesTareasCompartidas(false);
+          setMensajeAlertaActiviadesCompartidas("");
+          setAlertDelete(null);
+        }}
+          onCancel={() => setAlertDelete(null)}
+          confirmBtnCssClass={classes.button + ' ' + classes.success}
+        >
+         {mensajeAlertaActiviadesCompartidas}
+        </SweetAlert>
+      )
+    }else{
+      setAlertDelete(null)
+    }
+  }
+
+
   return (
     <>
       <Dialog

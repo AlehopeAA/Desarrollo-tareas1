@@ -116,6 +116,7 @@ const registerTask = asyncHandler(async (req, res) => {
         if (taskExisting.length > 0) {
           return res.status(400).json({ message: 'Ya existe una tarea con esa descripción en el perfil seleccionado' })
         }
+
         if (!taskExisting.length || taskExisting.length == 0) {
           profilesAndTasksMerged.push(`('${sameTasksIds[j]}'`, `'${profilesIds[i]}')`)
         }

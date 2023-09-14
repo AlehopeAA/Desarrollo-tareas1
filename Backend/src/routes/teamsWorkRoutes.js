@@ -10,6 +10,7 @@ const {
   getTeamsWorkByValidator,
   registerOrUpdateTeamWorkByResponsable,
   registerOrUpdateTeamWorkByValidator,
+  asignedProfilesToValidatorOrResponsable,
 } = require('../controllers')
 
 router.route('/').get(protect, getTeamsWorkList)
@@ -18,6 +19,7 @@ router.route('/responsables').post(protect, registerOrUpdateTeamWorkByResponsabl
 router.route('/responsables/:idPuesto').get(protect, getTeamsWorkByResponsible)
 
 router.route('/validadores').post(protect, registerOrUpdateTeamWorkByValidator)
+router.route('/validadores/responsablesvalidadoresprofile').post( protect,asignedProfilesToValidatorOrResponsable)
 router.route('/validadores/:idPuesto').get(protect, getTeamsWorkByValidator)
 
 module.exports = router

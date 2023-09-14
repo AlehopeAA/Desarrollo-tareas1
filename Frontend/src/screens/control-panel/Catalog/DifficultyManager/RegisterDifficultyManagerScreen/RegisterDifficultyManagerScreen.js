@@ -120,7 +120,7 @@ const RegisterDifficultyManagerScreen = () => {
               color='primary'
               onClick={() => dispatch(getDifficultiesToManager(currentJobPositionId))}
             >
-              Buscar asignaciones
+              Buscar puestos de trabajo
             </Button>
           </GridItem>
         </GridContainer>
