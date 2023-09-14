@@ -31,10 +31,15 @@ const TaskProfileForm = ({ taskByProfile }) => {
   const handleCreateTask = (e) => {
     dispatch(filterDuplicateTaskHandle(taskOther.id_tarea))
     if (e.target.checked && taskOther.copyTaskChecked) {
-      setTaskOther({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
-      dispatch(
-        fillCreateTaskHandle({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
-      )
+      if (taskOther.entrada === "SI" && taskOther.cuantificable === "NO") {
+        return;
+      } else {
+        setTaskOther({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
+        dispatch(
+          fillCreateTaskHandle({ ...taskOther, newTaskChecked: e.target.checked, copyTaskChecked: !e.target.checked })
+        )
+      }
+
     } else if (e.target.checked) {
       setTaskOther({ ...taskOther, newTaskChecked: e.target.checked })
       dispatch(
@@ -71,198 +76,206 @@ const TaskProfileForm = ({ taskByProfile }) => {
     setTaskOther({ ...taskOther, codigo_trazabilidad: e.target.value })
   }
 
-  return (
-    <div style={{ width: '100%', marginTop: '30px' }}>
-      <GridItem xs={12}>
-        <FormGroup aria-label='position' row>
-          <FormControlLabel
-            value='create'
-            control={<Checkbox checked={taskOther.newTaskChecked} onChange={handleCreateTask} />}
-            label='Crear Tarea'
-            labelPlacement='end'
+  if(taskByProfile.activo === 'SI'){
+    console.log('RESULTADO' + taskByProfile.activo)
+  
+    return (
+      <div style={{ width: '100%', marginTop: '30px' }}>
+        <GridItem xs={12}>
+          <FormGroup aria-label='position' row>
+            <FormControlLabel
+              value='create'
+              control={<Checkbox checked={taskOther.newTaskChecked} onChange={handleCreateTask} />}
+              label='Crear Tarea'
+              labelPlacement='end'
+            />
+            <FormControlLabel
+              value='duplicate'
+              control={<Checkbox checked={taskOther.copyTaskChecked} onChange={handleCopyTask} />}
+              label='Misma Tarea'
+              labelPlacement='end'
+            />
+          </FormGroup>
+        </GridItem>
+        <GridItem xs={12}>
+          <CustomInput
+            labelText={'DESCRIPCION'}
+            id='description'
+            formControlProps={{
+              fullWidth: true,
+            }}
+            inputProps={{
+              value: taskOther.descripcion_tarea,
+              onChange: (e) => setTaskOther({ ...taskOther, descripcion_tarea: e.target.value }),
+              type: 'text',
+              required: true,
+              disabled: !taskOther.newTaskChecked,
+            }}
           />
-          <FormControlLabel
-            value='duplicate'
-            control={<Checkbox checked={taskOther.copyTaskChecked} onChange={handleCopyTask} />}
-            label='Misma Tarea'
-            labelPlacement='end'
-          />
-        </FormGroup>
-      </GridItem>
-      <GridItem xs={12}>
-        <CustomInput
-          labelText={'DESCRIPCION'}
-          id='description'
-          formControlProps={{
-            fullWidth: true,
-          }}
-          inputProps={{
-            value: taskOther.descripcion_tarea,
-            onChange: (e) => setTaskOther({ ...taskOther, descripcion_tarea: e.target.value }),
-            type: 'text',
-            required: true,
-            disabled: !taskOther.newTaskChecked,
-          }}
-        />
-      </GridItem>
-      <GridItem xs={12}>
-        <FormControl fullWidth>
-          <InputLabel id='task-type'>Tipo de Tarea *</InputLabel>
-          <Select
-            labelId='task-type'
-            id='task-type'
-            value={taskOther.tipo_tarea}
-            disabled={!taskOther.newTaskChecked}
-            label='task-type'
-            onChange={(e) => setTaskOther({ ...taskOther, tipo_tarea: e.target.value })}
-            required= 'true'
-          >
-            <MenuItem value={'ORDINARIA'}>ORDINARIA</MenuItem>
-            <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
-          </Select>
-        </FormControl>
-      </GridItem>
-      <GridItem xs={12}>
-        <GridContainer>
-        <GridItem xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='indicador'>Indicador</InputLabel>
-              <Select
-                labelId='indicador'
-                id='indicador'
-                disabled={!taskOther.newTaskChecked}
-                value={taskOther.indicador}
-                label='Indicador'
-                onChange={(e) => setTaskOther({ ...taskOther, indicador: e.target.value })}
-              >
-                <MenuItem value={'SI'}>SI</MenuItem>
-                <MenuItem value={'NO'}>NO</MenuItem>
-              </Select>
-            </FormControl>
-          </GridItem>
-          <GridItem xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='cuantificable'>Cuantificable</InputLabel>
-              <Select
-                labelId='cuantificable'
-                id='cuantificable'
-                disabled={!taskOther.newTaskChecked}
-                value={taskOther.cuantificable}
-                label='Cuantificable'
-                onChange={(e) => setTaskOther({ ...taskOther, cuantificable: e.target.value })}
-              >
-                <MenuItem value={'SI'}>SI</MenuItem>
-                <MenuItem value={'NO'}>NO</MenuItem>
-              </Select>
-            </FormControl>
-          </GridItem>
-          <GridItem xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='entrada'>Entrada</InputLabel>
-              <Select
-                labelId='entrada'
-                id='entrada'
-                value={taskOther.entrada}
-                label='Entrada'
-                disabled={!taskOther.newTaskChecked}
-                onChange={(e) => setTaskOther({ ...taskOther, entrada: e.target.value })}
-              >
-                <MenuItem value={'SI'}>SI</MenuItem>
-                <MenuItem value={'NO'}>NO</MenuItem>
-              </Select>
-            </FormControl>
-          </GridItem>
-          <GridItem xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='compartida'>Compartida</InputLabel>
-              <Select
-                labelId='compartida'
-                id='compartida'
-                value={taskOther.compartida}
-                disabled={!taskOther.newTaskChecked}
-                label='Compartida'
-                onChange={(e) => setTaskOther({ ...taskOther, compartida: e.target.value })}
-              >
-                <MenuItem value={'SI'}>SI</MenuItem>
-                <MenuItem value={'NO'}>NO</MenuItem>
-              </Select>
-            </FormControl>
-          </GridItem>
-          <GridItem xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='dificultad'>Dificultad</InputLabel>
-              <Select
-                labelId='dificultad'
-                id='dificultad'
-                value={taskOther.dificultad}
-                disabled={!taskOther.newTaskChecked}
-                label='Dificultad'
-                onChange={(e) => setTaskOther({ ...taskOther, dificultad: e.target.value })}
-              >
-                <MenuItem value={'SI'}>SI</MenuItem>
-                <MenuItem value={'NO'}>NO</MenuItem>
-              </Select>
-            </FormControl>
-          </GridItem>
-          <GridItem xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='acumulativa'>Acumulativa</InputLabel>
-              <Select
-                labelId='acumulativa'
-                id='acumulativa'
-                value={taskOther.acumulativa}
-                disabled={!taskOther.newTaskChecked}
-                label='Acumulativa'
-                onChange={(e) => setTaskOther({ ...taskOther, acumulativa: e.target.value })}
-              >
-                <MenuItem value={'SI'}>SI</MenuItem>
-                <MenuItem value={'NO'}>NO</MenuItem>
-              </Select>
-            </FormControl>
-          </GridItem>
-          <GridItem xs={12} md={12}>
-            <FormControl fullWidth>
-              <InputLabel id='codigo_trazabilidad'>COD. TRAZABILIDAD</InputLabel>
-              <Select
-                labelId='codigo_trazabilidad'
-                id='codigo_trazabilidad'
-                name='codigo_trazabilidad'
-                value={codTrazability}
-                disabled={!taskOther.newTaskChecked}
-                label='codigo_trazabilidad'
-                onChange={(e) => handleSelector(e)}
-              >
-                {[
-                  'NO',
-                  'Nº Expediente',
-                  'Nombre de fichero',
-                  'Nº comunicación',
-                  'Nº de relación',
-                  'Nº de lote',
-                  'Otro',
-                ].map((cod) => (
-                  <MenuItem value={cod}>{cod} </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {codTrazability === 'Otro' && (
+        </GridItem>
+        <GridItem xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id='task-type'>Tipo de Tarea *</InputLabel>
+            <Select
+              labelId='task-type'
+              id='task-type'
+              value={taskOther.tipo_tarea}
+              disabled={!taskOther.newTaskChecked}
+              label='task-type'
+              onChange={(e) => setTaskOther({ ...taskOther, tipo_tarea: e.target.value })}
+              required='true'
+            >
+              <MenuItem value={'ORDINARIA'}>ORDINARIA</MenuItem>
+              <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
+        <GridItem xs={12}>
+          <GridContainer>
+            <GridItem xs={12} md={6}>
               <FormControl fullWidth>
-                <CustomInput
-                  id='codigo_trazabilidad'
-                  labelText={'Ingrese código de trazabilidad'}
-                  inputProps={{
-                    onChange: (e) => setTaskOther({ ...taskOther, codigo_trazabilidad: e.target.value }),
-                    type: 'text',
-                    required: true,
-                  }}
-                />
+                <InputLabel id='indicador'>Indicador</InputLabel>
+                <Select
+                  labelId='indicador'
+                  id='indicador'
+                  disabled={!taskOther.newTaskChecked}
+                  value={taskOther.indicador}
+                  label='Indicador'
+                  onChange={(e) => setTaskOther({ ...taskOther, indicador: e.target.value })}
+                >
+                  <MenuItem value={'SI'}>SI</MenuItem>
+                  <MenuItem value={'NO'}>NO</MenuItem>
+                </Select>
               </FormControl>
-            )}{' '}
-          </GridItem>
-        </GridContainer>
-      </GridItem>
-    </div>
-  )
+            </GridItem>
+            <GridItem xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id='cuantificable'>Cuantificable</InputLabel>
+                <Select
+                  labelId='cuantificable'
+                  id='cuantificable'
+                  disabled={!taskOther.newTaskChecked}
+                  value={taskOther.cuantificable}
+                  label='Cuantificable'
+                  onChange={(e) => setTaskOther({ ...taskOther, cuantificable: e.target.value })}
+                >
+                  <MenuItem value={'SI'}>SI</MenuItem>
+                  <MenuItem value={'NO'}>NO</MenuItem>
+                </Select>
+              </FormControl>
+            </GridItem>
+            <GridItem xs={12} md={6}>
+
+              <FormControl fullWidth>
+                <InputLabel id='entrada'>Entrada</InputLabel>
+                <Select
+                  labelId='entrada'
+                  id='entrada'
+                  value={taskOther.entrada}
+                  label='Entrada'
+                  disabled={!taskOther.newTaskChecked}
+                  onChange={(e) => setTaskOther({ ...taskOther, entrada: e.target.value })}
+                >
+                  <MenuItem value={'SI'}>SI</MenuItem>
+                  <MenuItem value={'NO'}>NO</MenuItem>
+                </Select>
+              </FormControl>
+            </GridItem>
+            <GridItem xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id='compartida'>Compartida</InputLabel>
+                <Select
+                  labelId='compartida'
+                  id='compartida'
+                  value={taskOther.compartida}
+                  disabled={!taskOther.newTaskChecked}
+                  label='Compartida'
+                  onChange={(e) => setTaskOther({ ...taskOther, compartida: e.target.value })}
+                >
+                  <MenuItem value={'SI'}>SI</MenuItem>
+                  <MenuItem value={'NO'}>NO</MenuItem>
+                </Select>
+              </FormControl>
+            </GridItem>
+            <GridItem xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id='dificultad'>Dificultad</InputLabel>
+                <Select
+                  labelId='dificultad'
+                  id='dificultad'
+                  value={taskOther.dificultad}
+                  disabled={!taskOther.newTaskChecked}
+                  label='Dificultad'
+                  onChange={(e) => setTaskOther({ ...taskOther, dificultad: e.target.value })}
+                >
+                  <MenuItem value={'SI'}>SI</MenuItem>
+                  <MenuItem value={'NO'}>NO</MenuItem>
+                </Select>
+              </FormControl>
+            </GridItem>
+            <GridItem xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id='acumulativa'>Acumulativa</InputLabel>
+                <Select
+                  labelId='acumulativa'
+                  id='acumulativa'
+                  value={taskOther.acumulativa}
+                  disabled={!taskOther.newTaskChecked}
+                  label='Acumulativa'
+                  onChange={(e) => setTaskOther({ ...taskOther, acumulativa: e.target.value })}
+                >
+                  <MenuItem value={'SI'}>SI</MenuItem>
+                  <MenuItem value={'NO'}>NO</MenuItem>
+                </Select>
+              </FormControl>
+            </GridItem>
+            <GridItem xs={12} md={12}>
+              <FormControl fullWidth>
+                <InputLabel id='codigo_trazabilidad'>COD. TRAZABILIDAD</InputLabel>
+                <Select
+                  labelId='codigo_trazabilidad'
+                  id='codigo_trazabilidad'
+                  name='codigo_trazabilidad'
+                  value={codTrazability}
+                  disabled={!taskOther.newTaskChecked}
+                  label='codigo_trazabilidad'
+                  onChange={(e) => handleSelector(e)}
+                >
+                  {[
+                    'NO',
+                    'Nº Expediente',
+                    'Nombre de fichero',
+                    'Nº comunicación',
+                    'Nº de relación',
+                    'Nº de lote',
+                    'Otro',
+                  ].map((cod) => (
+                    <MenuItem value={cod}>{cod} </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {codTrazability === 'Otro' && (
+                <FormControl fullWidth>
+                  <CustomInput
+                    id='codigo_trazabilidad'
+                    labelText={'Ingrese código de trazabilidad'}
+                    inputProps={{
+                      onChange: (e) => setTaskOther({ ...taskOther, codigo_trazabilidad: e.target.value }),
+                      type: 'text',
+                      required: true,
+                    }}
+                  />
+                </FormControl>
+              )}{' '}
+            </GridItem>
+          </GridContainer>
+        </GridItem>
+      </div>
+    )
+  }else{
+    return null;
+  }
+ 
 }
 
 export default TaskProfileForm

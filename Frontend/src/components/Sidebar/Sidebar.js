@@ -600,7 +600,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
             {profileManagerPermission && (
               <List className={classes.list + ' ' + classes.collapseList}>
                 <ListItem className={cx({ [classes.item]: false }, { [classes.collapseItem]: true })}>
-                  <Tooltip title='TAREAS ORD/EXT' disableHoverListener={!miniActive}>
+                  <Tooltip title='TAREAS DE PERFIL' disableHoverListener={!miniActive}>
                     <NavLink
                       to='#!'
                       onClick={() => setOrdExtTasksCollapse(!ordExtTasksCollapse)}
@@ -610,7 +610,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                         <Task />
                       </span>
                       <ListItemText
-                        primary='TAREAS ORD/EXT'
+                        primary='TAREAS DE PERFIL'
                         secondary={
                           <b className={classes.caret + ' ' + (ordExtTasksCollapse ? classes.caretActive : '')} />
                         }
@@ -622,7 +622,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                   <Collapse in={ordExtTasksCollapse} unmountOnExit>
                     <List className={classes.list + ' ' + classes.collapseList}>
                       <ListItem className={cx({ [classes.item]: true }, { [classes.collapseItem]: true })}>
-                        <Tooltip title='LISTADO ORD/EXT' disableHoverListener={!miniActive}>
+                        <Tooltip title='LISTADO TAREAS DE PERFIL' disableHoverListener={!miniActive}>
                           <NavLink
                             to={'/admin/tasks-ord-ext-list'}
                             className={`${classes.itemLink}` + ' ' + classes.collapseItemLink}
@@ -631,7 +631,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                               <FormatListBulleted />
                             </span>
                             <ListItemText
-                              primary='LISTADO ORD/EXT'
+                              primary='LISTADO TAREAS DE PERFIL'
                               disableTypography={true}
                               className={cx({ [itemText]: true }, { [collapseItemText]: false })}
                             />
@@ -639,7 +639,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                         </Tooltip>
                       </ListItem>
                       <ListItem className={cx({ [classes.item]: true }, { [classes.collapseItem]: true })}>
-                        <Tooltip title='ALTA TAREAS ORD/EXT' disableHoverListener={!miniActive}>
+                        <Tooltip title='ALTA TAREAS DE PERFIL' disableHoverListener={!miniActive}>
                           <NavLink
                             to={'/admin/tasks-ord-ext-register'}
                             className={`${classes.itemLink}` + ' ' + classes.collapseItemLink}
@@ -648,7 +648,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                               <PostAdd />
                             </span>
                             <ListItemText
-                              primary='ALTA TAREAS ORD/EXT'
+                              primary='ALTA TAREAS DE PERFIL'
                               disableTypography={true}
                               className={cx({ [itemText]: true }, { [collapseItemText]: false })}
                             />
@@ -1125,7 +1125,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                         <MilitaryTech />
                       </span>
                       <ListItemText
-                        primary='O.TAREAS ORD/EXT'
+                        primary='O.TAREAS DE PERFIL'
                         secondary={
                           <b className={classes.caret + ' ' + (ordExtObjetivesCollapse ? classes.caretActive : '')} />
                         }
@@ -1137,7 +1137,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                   <Collapse in={ordExtObjetivesCollapse} unmountOnExit>
                     <List className={classes.list + ' ' + classes.collapseList}>
                       <ListItem className={cx({ [classes.item]: true }, { [classes.collapseItem]: true })}>
-                        <Tooltip title='LISTADO ORD/EXT' disableHoverListener={!miniActive}>
+                        <Tooltip title='LISTADO TAREAS DE PERFIL' disableHoverListener={!miniActive}>
                           <NavLink
                             to={'/admin/objectives-ord-ext-list'}
                             className={`${classes.itemLink}` + ' ' + classes.collapseItemLink}
@@ -1146,7 +1146,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                               <FormatListBulleted />
                             </span>
                             <ListItemText
-                              primary='LISTADO ORD/EXT'
+                              primary='LISTADO DE TAREAS DE PERFIL'
                               disableTypography={true}
                               className={cx({ [itemText]: true }, { [collapseItemText]: false })}
                             />
@@ -1154,7 +1154,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                         </Tooltip>
                       </ListItem>
                       <ListItem className={cx({ [classes.item]: true }, { [classes.collapseItem]: true })}>
-                        <Tooltip title='ALTA OBJETIVOS ORD/EXT' disableHoverListener={!miniActive}>
+                        <Tooltip title='ALTA OBJETIVOS DE PERFIL' disableHoverListener={!miniActive}>
                           <NavLink
                             to={'/admin/objectives-ord-ext-register'}
                             className={`${classes.itemLink}` + ' ' + classes.collapseItemLink}
@@ -1163,7 +1163,7 @@ const Sidebar = ({ color, logo, routes, bgColor, open, handleDrawerToggle, miniA
                               <PostAdd />
                             </span>
                             <ListItemText
-                              primary='ALTA OBJETIVOS ORD/EXT'
+                              primary='ALTA OBJETIVOS DE PERFIL'
                               disableTypography={true}
                               className={cx({ [itemText]: true }, { [collapseItemText]: false })}
                             />

@@ -6,6 +6,7 @@ import { taskUpdateInfo } from 'redux/actions/taskActions'
 import { TASK_LIST_RESET, TASK_UPDATE_RESET } from 'redux/constants/taskConstants'
 
 const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) => {
+  console.log('test')
   const dispatch = useDispatch()
 
   const [infoTask, setInfoTask] = useState(showUpdateTask)
@@ -23,6 +24,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   }, [successTaskUpdate])
 
   const updateTaskHandler = (e) => {
+    console.log('por favor ya')
     e.preventDefault()
     dispatch(taskUpdateInfo({ ...infoTask, id_puesto: 1 }))
   }

@@ -20,7 +20,9 @@ const ObjetivesOrdExtOtherListScreen = () => {
   const dispatch = useDispatch()
 
   const { loadingObjetiveOrdExtOtherList, objetiveOrdExtOtherListData, successObjetiveOrdExtOtherList } = useSelector(
-    (state) => state.objetiveOrdExtOtherList
+    (state) =>{
+      
+      return state.objetiveOrdExtOtherList} 
   )  
 
   const { successObjetiveOrdExtUpdate } = useSelector((state) => state.objetivesOrdExtUpdate)
@@ -127,7 +129,9 @@ const ObjetivesOrdExtOtherListScreen = () => {
 
   useEffect(() => {
     if (successObjetiveOrdExtOtherList) {
+      console.log(objetiveOrdExtOtherListData)
       const objectives = objetiveOrdExtOtherListData.map((item) => {
+        
         return {
           ...item,
           fullUnidades: `${item?.unidades_minimo || '-'} / ${item?.unidades_medio || '-'} / ${item?.unidades_maximo || '-'}  `,
@@ -175,7 +179,7 @@ const ObjetivesOrdExtOtherListScreen = () => {
       {!loadingObjetiveOrdExtOtherList && (
         <>
           {viewListModal && (
-            <ObjectivesTable data={infodata} label={'Ord/Ext'} />
+            <ObjectivesTable data={infodata} label={'Tareas de Perfil'} />
           )}
           {viewObjectiveInfoModal && (
             <ViewObjectiveInfo
@@ -205,7 +209,7 @@ const ObjetivesOrdExtOtherListScreen = () => {
             <ViewHistorical
               closeViewActivityInfoModal={closeHistoricalModal}
               info={showHistorical}
-              label='Ord/Ext'
+              label='Tareas de Perfil'
             />
           )}
         </>

@@ -5,6 +5,9 @@ import {
   OBJETIVES_SPECIFIC_REGISTER_FAIL,
   OBJETIVES_SPECIFIC_LIST_REQUEST,
   OBJETIVES_SPECIFIC_LIST_SUCCESS,
+  OBJETIVE_TASK_REQUEST,
+  OBJETIVE_TASK_SUCCESS,
+  OBJETIVE_TASK_FAIL,
   OBJETIVES_SPECIFIC_UPDATE_REQUEST,
   OBJETIVES_SPECIFIC_UPDATE_SUCCESS,
   OBJETIVES_SPECIFIC_UPDATE_FAIL,
@@ -62,6 +65,33 @@ export const getObjetivesSpecific = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: OBJETIVES_SPECIFIC_LIST_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
+
+
+export const getObjetivesByTask = (tarea) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: OBJETIVE_TASK_REQUEST })
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+        'Cache-Control': 'no-cache',
+      },
+    }
+    const { data } = await axios.get(
+      `/api/objetivosespecificos/nuevo/${tarea}`, config
+    )
+
+    dispatch({ type: OBJETIVE_TASK_SUCCESS, payload: data })
+  } catch (error) {
+    dispatch({
+      type: OBJETIVE_TASK_FAIL,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     })
   }

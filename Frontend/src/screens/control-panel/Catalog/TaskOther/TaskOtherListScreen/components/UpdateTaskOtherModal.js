@@ -21,6 +21,7 @@ import { PROFILE_LIST_RESET } from 'redux/constants/profileConstants'
 import { getProfiles } from 'redux/actions/profileActions'
 import { getTaskProfiles } from 'redux/actions/taskOtherActions'
 import { taskOtherUpdateInfo } from 'redux/actions/taskOtherActions'
+import { deleteShared } from 'redux/actions/sharedActions'
 import { TASK_OTHER_LIST_RESET, TASK_OTHER_UPDATE_RESET, TASK_PROFILES_RESET } from 'redux/constants/taskOtherConstants'
 import styles from '../styles/updateTaskOtherModalStyles'
 
@@ -36,6 +37,10 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   const [profilesDataError, setProfileError] = useState('')
   const [profilesData, setProfilesData] = useState([])
   const { successProfileList, loadingProfileList, profiles } = useSelector((state) => state.profileList)
+
+  const [originShared, setOriginShared] = useState('')
+
+  const { successSharedDelete, loadingSharedDelete, errorSharedDelete } = useSelector((state) => state.sharedDelete)
 
   const { loadingTaskProfiles, taskProfilesData } = useSelector((state) => state.taskProfiles)
 
@@ -87,15 +92,28 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   }, [successProfileList])
 
   const updateTaskHandler = (e) => {
+    console.log('infoinfoinfo')
+    console.log(infoTaskOther)
+    
+let option=true
+console.log(originShared)
+
     e.preventDefault()
     if (profilesData.length === 0) {
       return setProfileError('Por favor seleccione un Perfil.')
+    }
+    if (infoTaskOther.compartida == 'NO'&& originShared == 'SI') {
+      option=window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
     }
     const data = {
       ...infoTaskOther,
       profilesData,
     }
-    dispatch(taskOtherUpdateInfo(data))
+    if (option) {
+      
+      dispatch(taskOtherUpdateInfo(data))
+      dispatch(deleteShared(infoTaskOther.id_tarea))
+    }
   }
 
   const handleSelector = (e) => {
@@ -237,7 +255,10 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   id='compartida'
                   value={infoTaskOther.compartida}
                   label='Compartida'
-                  onChange={(e) => setInfoTaskOther({ ...infoTaskOther, compartida: e.target.value })}
+                  onChange={(e) => {
+                    setOriginShared(infoTaskOther.compartida)
+                    setInfoTaskOther({ ...infoTaskOther, compartida: e.target.value })}
+                }
                 >
                   <MenuItem value={'SI'}>SI</MenuItem>
                   <MenuItem value={'NO'}>NO</MenuItem>

@@ -38,7 +38,7 @@ const getSpecificObjetives = asyncHandler(async (req, res) => {
     )
     ORDER BY puestos_trabajo.nombre, puestos_trabajo.apellido1, puestos_trabajo.apellido2, tareas.descripcion_tarea
   `
-
+console.log('AQUÍ')
   db.query(objetivesQuery, (err, result) => {
     if (err) {
       return res.status(400).json({ message: err.sqlMessage })

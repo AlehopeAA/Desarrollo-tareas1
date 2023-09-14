@@ -75,6 +75,7 @@ const TaskRegisterScreen = () => {
   return (
     <>
       <GridContainer>
+        
         <GridItem xs={12} md={8} style={{ margin: 'auto' }}>
           <Card>
             <CardBody>

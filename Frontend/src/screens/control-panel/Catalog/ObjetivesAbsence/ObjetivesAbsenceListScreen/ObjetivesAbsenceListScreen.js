@@ -137,6 +137,7 @@ const ObjetivesAbsenceListScreen = () => {
   useEffect(() => {
     if (successObjetiveAbsenceList) {
       const objectives = objetiveAbsenceListData.map((item) => {
+        
         return {
           ...item,
           fullUnidades: `${item?.unidades_minimo || '-'} / ${item?.unidades_medio || '-'} / ${item?.unidades_maximo || '-'}  `,

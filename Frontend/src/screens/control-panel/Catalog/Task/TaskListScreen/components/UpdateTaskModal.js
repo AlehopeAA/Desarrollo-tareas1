@@ -24,6 +24,7 @@ import { getTaskTypes } from 'redux/actions/taskTypeActions'
 const useStyles = makeStyles(styles)
 
 const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) => {
+  console.log('actualizar tarea')
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -51,6 +52,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
 
   const updateTaskHandler = (e) => {
     e.preventDefault()
+    
     console.log({ ...infoTask, id_puesto: 1 })
     dispatch(taskUpdateInfo({ ...infoTask, id_puesto: 1 }))
   }
