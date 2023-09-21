@@ -264,9 +264,9 @@ const ReactTable = ({ columns, data, numFilas, color }) => {
                           display: 'inline',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          background: row.original.indicador == 'SI' && row.original.porcentaje_entrada_maximo == null && row.original.porcentaje_entrada_medio == null 
-                          && row.original.porcentaje_entrada_minimo == null && row.original.porcentaje_jornada_maximo == null && row.original.porcentaje_jornada_medio == null
-                          && row.original.porcentaje_jornada_minimo == null? 'rgba(255,0,0,0.5)' : ''
+                          background: row.original.indicador == 'SI' && row.original.porcentaje_entrada_maximo === null && row.original.porcentaje_entrada_medio === null 
+                          && row.original.porcentaje_entrada_minimo === null && row.original.porcentaje_jornada_maximo === null && row.original.porcentaje_jornada_medio === null
+                          && row.original.porcentaje_jornada_minimo === null? 'rgba(255,0,0,0.5)' : ''
                         }}
                       >
                         {value == 0 ? 0 : !value ? '-' : cell.render('Cell')}

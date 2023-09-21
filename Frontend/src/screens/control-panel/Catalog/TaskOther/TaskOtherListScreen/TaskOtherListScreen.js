@@ -6,6 +6,7 @@ import 'jspdf-autotable'
 import { Card, makeStyles, Tooltip } from '@material-ui/core'
 import { Visibility, Delete, Edit } from '@material-ui/icons'
 import { Lightbulb, LightbulbOutlined, Calculate, DataObject } from '@mui/icons-material'
+import SweetAlert from 'react-bootstrap-sweetalert'
 import CardBody from 'components/Card/CardBody'
 import GridContainer from 'components/Grid/GridContainer'
 import GridItem from 'components/Grid/GridItem'
@@ -53,10 +54,13 @@ const TaskOtherListScreen = () => {
   const [viewObjetives, setViewObjetives] = useState(false)
   const [showObjetives, setShowObjetives] = useState({})
 
+  const [alert, setAlert] = useState(null)
+
   const { loadingTaskOtherList, taskOthers, successTaskOtherList, errorTaskOtherList } = useSelector((state) => state.taskOtherList)
 
   const { loadingObjetivesByTask, objetivesByTask, successObjetivesByTask, errorObjetivesByTask, } = useSelector((state) => state.objetivesByTask)
-
+  console.log('here');
+  console.log(objetivesByTask)
   // useEffect(()=>{
   //   console.log(successObjetivesByTask)
   //   if (successObjetivesByTask) {
@@ -64,6 +68,33 @@ const TaskOtherListScreen = () => {
   //     setShowObjetives(objetivesByTask)
   //   }
   // },[successObjetivesByTask])
+
+  // const confirmSuccess = () => {
+  //   setAlert(null)
+  //   // dispatch({ type: PROFILE_LIST_RESET })
+  //   // dispatch({ type: TASK_REGISTER_RESET })
+  //   // setTaskType('')
+  //   // dispatch({ type: TASK_LIST_BY_PROFILE_ID_RESET })
+  //   // dispatch({ type: TASK_LIST_DUPLICATE_BY_PROFILE_CLEAN })    
+  // }
+
+  // const hideAlert = () => {
+  //   setAlert(null)
+  // }
+
+  useEffect(() => {
+    // console.log(objetivesByTask)
+    if (successObjetivesByTask && objetivesByTask[0] != null) {
+      verObjetivos()
+    } else if (successObjetivesByTask && objetivesByTask[0] == null) {
+
+
+      // console.log(objetivesByTask)
+      window.alert('Esta tarea no tiene objetivos asignados')
+    }
+
+
+  }, [successObjetivesByTask])
 
   useEffect(() => {
 
@@ -80,10 +111,14 @@ const TaskOtherListScreen = () => {
                 round
                 size='sm'
                 simple
-                onClick={() => handleObjetive(item).then(() => {
-                  setShowObjetives(objetivesByTask) 
-                  setViewObjetives(true)
-                })
+                onClick={() => 
+                  handleObjetive(item)
+               
+                  //   .then(() => {
+                  //   setShowObjetives(objetivesByTask) 
+                  //   setViewObjetives(true)
+                  // })
+                
                 }
 
                 color='behance'
@@ -255,25 +290,36 @@ const TaskOtherListScreen = () => {
     setShowDeleteTask({})
   }
 
-  const handleObjetive = async (tarea) => {
+  const handleObjetive = (tarea) => {
 
 
-    await dispatch(getObjetivesByTask(tarea.id_tarea))
+    dispatch(getObjetivesByTask(tarea.id_tarea))
+    // setTimeout(() => {
+    //   test()
+    // }, 3000);
+    //     console.log('here');
+    // console.log(objetivesByTask)
     // console.log('tareatareatarea')
     // console.log(showObjetives)
     // .then(() => {
-    //   setShowObjetives(objetivesByTask)
-    //   setViewObjetives(true)
     // })
     // if (objetivesByTask) {
 
     // .then( test())
 
     // }
+
+
+    // setShowObjetives(objetivesByTask)
+
+
+    //   setViewObjetives(true)
+
+
   }
 
-  const test = () => {
-    setShowObjetives(objetivesByTask)
+  const verObjetivos = () => {
+    setShowObjetives(objetivesByTask[0])
     setViewObjetives(true)
   }
   const closeObjetives = () => {
@@ -330,7 +376,7 @@ const TaskOtherListScreen = () => {
 
   return (
     <>
-
+      {/* {alert} */}
       {viewListModal && (
         <GridContainer>
           <GridItem xs={12} className={classes.rootItem}>
@@ -458,7 +504,7 @@ const TaskOtherListScreen = () => {
           info={showViewInfo}
         />
       )}
-      {console.log(showObjetives)}
+      {/* {console.log(showObjetives)} */}
       {viewObjetives && (
         <ViewObjectiveTask
           closeViewActivityInfoModal={closeObjetives}

@@ -69,6 +69,7 @@ const TaskRegisterScreen = () => {
   }
 
   const handleSubmit = (e) => {
+    console.log('testsepsep')
     e.preventDefault()
     dispatch(registerTask({ ...task, activo: 'si', id_puesto: 1 }))
   }
