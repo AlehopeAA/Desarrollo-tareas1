@@ -10,6 +10,7 @@ const { registerRecord } = require('../../utils/queryPromises')
 const updateGeneralObjetives = asyncHandler(async (req, res) => {
    const { id } = req.params
    const { id_puesto } = req.user
+   console.log("dfdfs")
    const {
       dificulty,
       unit_min,

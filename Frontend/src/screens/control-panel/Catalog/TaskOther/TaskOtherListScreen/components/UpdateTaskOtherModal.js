@@ -23,6 +23,8 @@ import { getTaskProfiles } from 'redux/actions/taskOtherActions'
 import { taskOtherUpdateInfo } from 'redux/actions/taskOtherActions'
 import { TASK_OTHER_LIST_RESET, TASK_OTHER_UPDATE_RESET, TASK_PROFILES_RESET } from 'redux/constants/taskOtherConstants'
 import styles from '../styles/updateTaskOtherModalStyles'
+import SweetAlert from 'react-bootstrap-sweetalert'
+import { objetivesAbsensesUpdateInfo } from 'redux/actions/objetivesAbsencesActions'
 
 const useStyles = makeStyles(styles)
 
@@ -42,6 +44,17 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   const { loadingTaskOtherUpdate, errorTaskOtherUpdate, successTaskOtherUpdate } = useSelector(
     (state) => state.taskOtherUpdate
   )
+
+ const {
+    loadingObjetiveAbsenceUpdate,
+    successObjetiveAbsenceUpdate,
+    objetiveAbsenceUpdateData,
+    errorObjetiveAbsenceUpdate,
+  } = useSelector((state) => state.objetivesAbsencesUpdate)
+
+  const [alertIndicador, setAlertupdateIndicador] = useState(null)
+  const [indicadorAlert, setIndicadorAlert] = useState(false)
+
 
   useEffect(() => {
     dispatch(getTaskProfiles(showUpdateTask.id_tarea))
@@ -70,9 +83,9 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
       dispatch({ type: TASK_OTHER_LIST_RESET })
       dispatch({ type: PROFILE_LIST_RESET })
       setTimeout(() => {
-         dispatch({ type: TASK_OTHER_UPDATE_RESET })
-         handleCloseModal()
-        }, 1000)
+        dispatch({ type: TASK_OTHER_UPDATE_RESET })
+        handleCloseModal()
+      }, 1000)
     }
   }, [successTaskOtherUpdate])
 
@@ -86,17 +99,97 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
     }
   }, [successProfileList])
 
+  useEffect(() => {
+    if (indicadorAlert) {
+      console.log("despues del alert")
+      const data = {
+        ...infoTaskOther,
+        profilesData,
+      };
+      console.log(infoTaskOther)
+      dispatch(taskOtherUpdateInfo(data));
+      dispatch(objetivesAbsensesUpdateInfo(infoTaskOther))
+    }
+  }, [indicadorAlert]); // Este efecto se dispara cada vez que indicadorAlert cambia
+
   const updateTaskHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (profilesData.length === 0) {
-      return setProfileError('Por favor seleccione un Perfil.')
+      return setProfileError('Por favor seleccione un Perfil.');
     }
     const data = {
       ...infoTaskOther,
       profilesData,
+    };
+    if (data.indicador == "NO") {
+      setAlertupdateIndicador(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => setIndicadorAlert(true)} // Aquí cambias indicadorAlert a true
+          onCancel={() => setAlertupdateIndicador(null)}
+          confirmBtnText='SI'
+          cancelBtnText='NO'
+          confirmBtnCssClass={classes.button + ' ' + classes.success}
+          cancelBtnCssClass={classes.button + ' ' + classes.danger}
+          showCancel
+        >
+          Si modifica el atributo de esta tarea a indicador=no, los valores de los objetivos asignados se borrarán, desea continuar?
+        </SweetAlert>
+      );
+    } else {
+      console.log(data)
+      dispatch(taskOtherUpdateInfo(data));
     }
-    dispatch(taskOtherUpdateInfo(data))
-  }
+  };
+
+  // const updateTaskHandlerOriginal = (e) => {
+  //   e.preventDefault()
+  //   if (profilesData.length === 0) {
+  //     return setProfileError('Por favor seleccione un Perfil.')
+  //   }
+  //   const data = {
+  //     ...infoTaskOther,
+  //     profilesData,
+  //   }
+  //   dispatch(taskOtherUpdateInfo(data))
+  // }
+
+  // const updateTaskHandler = (e) => {
+  //   const data = {
+  //     ...infoTaskOther,
+  //     profilesData,
+  //   }
+  //   console.log(data)
+  //   console.log(data.indicador)
+  //   if (data.indicador == "NO") {
+  //     setIndicadorAlert(true)
+  //     console.log("Debería ser True: " + indicadorAlert)
+  //     setAlertupdateIndicador(
+  //       <SweetAlert
+  //         info
+  //         style={{ display: 'block', marginTop: '-100px' }}
+  //         title='Aviso!'
+  //         onConfirm={() => updateTaskHandlerOriginal(false)}
+  //         onCancel={() => setAlertupdateIndicador(null)}
+  //         confirmBtnCssClass={classes.confirmBtnCssClass}
+  //       >
+  //         Si modifica el atributo de esta tarea a indicador=no, los valores de los objetivos asignados se borrarán, desea continuar?
+  //       </SweetAlert>
+
+  //     )
+  //   } 
+  //   console.log(indicadorAlert)
+  //   if (indicadorAlert) {
+  //     console.log("PASA")
+  //     dispatch(taskOtherUpdateInfo(data))
+
+  //   }else {
+  //     console.log("pororpr")
+  //     updateTaskHandlerOriginal(e)
+  //   }
+  // }
 
   const handleSelector = (e) => {
     const {
@@ -110,11 +203,11 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
     const {
       target: { value },
     } = e
-    
-    setCodTipoTarea(value) 
-    value === 'ORDINARIA' ?      
+
+    setCodTipoTarea(value)
+    value === 'ORDINARIA' ?
       setInfoTaskOther({ ...infoTaskOther, id_tipo_tarea: '2' })
-    :
+      :
       setInfoTaskOther({ ...infoTaskOther, id_tipo_tarea: '3' })
   }
 
@@ -137,6 +230,9 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
       aria-labelledby='notice-modal-slide-title'
       aria-describedby='notice-modal-slide-description'
     >
+      <div>
+        {alertIndicador}
+      </div>
       <form onSubmit={updateTaskHandler} autoComplete='false'>
         <DialogTitle id='notice-modal-slide-title' disableTypography className={classes.modalHeader}>
           <Button
@@ -177,7 +273,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   value={codTipoTarea}
                   label='task-type'
                   onChange={(e) => handlerTipoTarea(e)}
-                  required= 'true'
+                  required='true'
                 >
                   <MenuItem value={'EXTRAORDINARIA'}>EXTRAORDINARIA</MenuItem>
                   <MenuItem value={'ORDINARIA'}>ORDINARIA</MenuItem>
@@ -213,7 +309,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   <MenuItem value={'NO'}>NO</MenuItem>
                 </Select>
               </FormControl>
-            </GridItem>            
+            </GridItem>
             <GridItem xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel id='entrada'>Entrada</InputLabel>
@@ -314,26 +410,26 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
               )}{' '}
             </GridItem>
             <GridItem xs={12} style={{ marginTop: '16px' }}>
-               {loadingProfileList ? (
-                 <>Cargando lista de perfiles</>
-               ) : (
-                 profiles && (
-                   <MultiSelectProfile
-                     label={'Perfiles'}
-                     data={profiles}
-                     multiData={profilesData}
-                     handleChangeMultiData={handleChangeMultiData}
+              {loadingProfileList ? (
+                <>Cargando lista de perfiles</>
+              ) : (
+                profiles && (
+                  <MultiSelectProfile
+                    label={'Perfiles'}
+                    data={profiles}
+                    multiData={profilesData}
+                    handleChangeMultiData={handleChangeMultiData}
                   />
                 )
-               )}
+              )}
             </GridItem>
             <GridItem xs={12} style={{ margin: '20px 0' }}>
               <Button type='submit' color={successTaskOtherUpdate ? 'success' : 'primary'} block>
                 {loadingTaskOtherUpdate
                   ? 'Actualizando...'
                   : successTaskOtherUpdate
-                  ? 'Tarea Actualizada'
-                  : 'Actualizar Tarea'}
+                    ? 'Tarea Actualizada'
+                    : 'Actualizar Tarea'}
               </Button>
             </GridItem>
           </GridContainer>
@@ -345,12 +441,12 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
             </GridContainer>
           )}
           {profilesDataError && profilesData.length === 0 && (
-          <GridContainer>
-            <GridItem xs={12}>
-              <SnackbarContent message={profilesDataError} color='danger' />
-            </GridItem>
-          </GridContainer>
-        )}
+            <GridContainer>
+              <GridItem xs={12}>
+                <SnackbarContent message={profilesDataError} color='danger' />
+              </GridItem>
+            </GridContainer>
+          )}
         </DialogContent>
       </form>
     </Dialog>
