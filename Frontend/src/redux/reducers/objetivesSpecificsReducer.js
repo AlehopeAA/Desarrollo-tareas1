@@ -75,7 +75,7 @@ export const objetivesByTaskReducer = (state = {}, action) => {
       return {
         loadingObjetivesByTask: false,
         successObjetivesByTask: true,
-        objetivesByTask: action.payload.result[0],
+        objetivesByTask: action.payload.result,
       }
     case OBJETIVE_TASK_FAIL:
       return {

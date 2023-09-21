@@ -11,7 +11,7 @@ const useStyles = makeStyles(styles)
 const ViewObjectiveTask = ({ viewActivityInfo, closeViewActivityInfoModal, info }) => {
   const classes = useStyles()
 
-  // console.log( info)
+  console.log( info)
 
   const {
     id_objetivo,

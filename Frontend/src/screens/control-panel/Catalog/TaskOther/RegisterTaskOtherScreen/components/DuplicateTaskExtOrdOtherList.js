@@ -115,6 +115,8 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
       createTask,
       sameTask,
     }
+    console.log('here')
+    console.log(data)
     dispatch(registerTask(data))
   }
 

@@ -18,8 +18,10 @@ console.log(req.params.tarea)
       res.status(400).json({ message: err.sqlMessage })
     }
     console.log(result)
-    if (result) { res.status(200).json({ result})
-    }
+    if (result != []) { res.status(200).json({ result})
+    } else {
+      res.status(200).message('TESTTESTTEST')
+  }
   })
 })
 

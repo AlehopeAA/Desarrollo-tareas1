@@ -84,6 +84,8 @@ const RegisterTaskSpecificScreen = () => {
     if (!currentJobPosition) {
       return setErrorJobPosition('El puesto de trabajo es obligatorio para registrar la tarea.')
     }
+    console.log('AAAAAAAAAA')
+    console.log(taskSpecific)
 
     dispatch(registerTaskSpecific({ ...taskSpecific, id_puesto: currentJobPosition }))
   }

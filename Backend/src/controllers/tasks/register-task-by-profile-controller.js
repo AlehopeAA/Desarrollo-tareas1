@@ -70,12 +70,12 @@ const registerTask = asyncHandler(async (req, res) => {
 
     const objetivesData = await queryPromise(objetivesQuery)
 
-   console.log(tasksIds)
+    console.log(tasksIds)
 
-   if (objetivesData.length > 0) {
-    objetivesData.map(async (objetive) => {
-      console.log(objetive)
-      const insertObjetiveValues = `
+    if (objetivesData.length > 0) {
+      objetivesData.map(async (objetive) => {
+        console.log(objetive)
+        const insertObjetiveValues = `
         '${objetive.dificultad}',
         ${objetive.unidades_minimo},
         ${objetive.unidades_medio},
@@ -93,10 +93,10 @@ const registerTask = asyncHandler(async (req, res) => {
         sysdate())
         `
 
-      objetivesTrueData.push(insertObjetiveValues)
-    })
-  }
-  console.log(objetivesTrueData)
+        objetivesTrueData.push(insertObjetiveValues)
+      })
+    }
+    console.log(objetivesTrueData)
     console.log(objetivesData)
 
     if (taskExist.length > 0) {
@@ -177,9 +177,9 @@ const registerTask = asyncHandler(async (req, res) => {
     }
   }
   if (objetivesTrueData.length > 0 && allIdsTasks.length > 0) {
-    for(let i = 0; i < allIdsTasks.length;i++){
+    for (let i = 0; i < allIdsTasks.length; i++) {
       objetivesTrueData[i] = `(
-        '${allIdsTasks[i]}',`+objetivesTrueData[i]
+        '${allIdsTasks[i]}',` + objetivesTrueData[i]
     }
   }
 
@@ -189,10 +189,10 @@ const registerTask = asyncHandler(async (req, res) => {
 
 
 
-console.log(objetivesTrueData)
-console.log(newTasksValues);
+  console.log(objetivesTrueData)
+  console.log(newTasksValues);
 
-const newTaskObjetivesQuery = `
+  const newTaskObjetivesQuery = `
   INSERT INTO objetivos (
       id_tarea,
       dificultad,
@@ -212,20 +212,20 @@ const newTaskObjetivesQuery = `
       fecha_ultima_modificacion) VALUES 
       ${objetivesTrueData.toString()}
     `
-if (objetivesTrueData.length > 0) {
-  console.log(newTaskObjetivesQuery)
-  console.log(insertTaskQuery)
-  const objetivesSuccess = await queryPromise(newTaskObjetivesQuery)
+  if (objetivesTrueData.length > 0) {
+    console.log(newTaskObjetivesQuery)
+    console.log(insertTaskQuery)
+    const objetivesSuccess = await queryPromise(newTaskObjetivesQuery)
 
-     console.log('exito ' + objetivesSuccess)
-}
+    console.log('exito ' + objetivesSuccess)
+  }
 
-    
 
- 
+
+
 
   // for await (let objetivo of objetivesTrueData) {
-    
+
   //   const newTaskObjetivesQuery = `
   //   INSERT INTO objetivos (
   //     id_tarea,
