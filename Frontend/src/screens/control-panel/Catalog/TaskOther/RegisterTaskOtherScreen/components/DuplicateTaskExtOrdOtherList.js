@@ -18,8 +18,11 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
   const dispatch = useDispatch()
 
   const [profilesData, setProfilesData] = useState([])
-
-  const { successProfileList, loadingProfileList, profiles } = useSelector((state) => state.profileList)
+  const [errorMsg, setErrorMsg] = useState('');
+  const { successProfileList, loadingProfileList, profiles } = useSelector((state) => {
+    console.log(state.taskRegister)
+    return state.profileList
+  })
   const { createTask, sameTask } = useSelector((state) => state.handleDuplicateTask)
   const [alert, setAlert] = useState(null)
   const { loadingTaskListByProfile, successTaskListByProfile, taskListByProfileData } = useSelector(
@@ -89,13 +92,31 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
     }
   }
 
-  const handleData = (e) => {
+  const handleData = async(e) => {
     e.preventDefault()
+    if(createTask[0].entrada === 'SI' && createTask[0].cuantificable === 'NO'){
+      return setErrorMsg('Si entrada es SI, cuantificable ha de ser SI')
+    }
+    if(createTask[0].codigo_trazabilidad != 'NO' && createTask[0].cuantificable === 'NO'){
+      return setErrorMsg('Si código de trazabilidad es distinto de NO, cuantificable ha de ser SI')
+    }
+    if(createTask[0].dificultad  === 'SI' && createTask[0].cuantificable === 'NO' && createTask[0].codigo_trazabilidad != 'NO'
+    || createTask[0].dificultad  === 'SI' && createTask[0].cuantificable === 'SI' && createTask[0].codigo_trazabilidad != 'NO'
+    || createTask[0].dificultad  === 'SI' && createTask[0].cuantificable === 'NO' && createTask[0].codigo_trazabilidad === 'NO'){
+      return setErrorMsg('SI dificultad es Si, cuantificable y código de trazabilidad han de ser SI')
+      
+    }
+    if(errorMsg != ''){
+      setErrorMsg(errorMsg);
+      return;
+    }
     const data = {
       profilesData,
       createTask,
       sameTask,
     }
+    console.log('here')
+    console.log(data)
     dispatch(registerTask(data))
   }
 
@@ -132,6 +153,12 @@ const DuplicateTaskExtOrdOtherList = ({ id, setTaskType }) => {
               <SnackbarContent message={errorTaskRegister} color='danger' />
             </GridItem>
           )}
+          {errorMsg && (
+            <GridItem xs={12}>
+              <SnackbarContent message={errorMsg} color='danger' />
+            </GridItem>
+          )}
+         
           <GridItem xs={12} style={{ textAlign: 'end' }}>
             <NavLink to={'/admin/tasks-ord-ext-register'} >
               <Button color='primary' onClick={confirmSuccess}>

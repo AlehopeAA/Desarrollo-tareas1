@@ -9,6 +9,8 @@ const { getAllRecords, getOneRecord } = require('../../utils/queryPromises')
 const getTaskProfiles = asyncHandler(async (req, res) => {
   const { id } = req.params
 
+
+
   const profilesByTaskQuery = `
     SELECT perfiles.codigo_perfil , perfiles.id_perfil 
     FROM tareas_perfil

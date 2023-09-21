@@ -10,6 +10,7 @@ const { registerRecord } = require('../../utils/queryPromises')
 // @access  Private/Admin
 
 const updateOrdExtTask = asyncHandler(async (req, res) => {
+  console.log(req.body)
   const id = req.params.id
   const { id_puesto } = req.user
   const {

@@ -97,7 +97,40 @@ const registeOrdExtOtherTask = asyncHandler(async (req, res) => {
       if (err) {
         res.status(400).json({ message: err.sqlMessage })
       }
+      console.log(resultTask)
+      if (resultTask && indicador == 'SI') {
+        const insertObjetiveQuery = `
+    INSERT INTO objetivos (
+      id_tarea,
+      dificultad,
+      unidades_minimo,
+      unidades_medio,
+      unidades_maximo,
+      porcentaje_entrada_minimo,
+      porcentaje_entrada_medio,
+      porcentaje_entrada_maximo,
+      tiempo_minimo,
+      tiempo_medio,
+      tiempo_maximo,
+      porcentaje_jornada_minimo,
+      porcentaje_jornada_medio,
+      porcentaje_jornada_maximo,
+      magnitud_temporal,
+      fecha_ultima_modificacion
+      ) VALUES (
+     '${resultTask.insertId}', '', null, null, null, null, null, null, null, null, null, null, null, null, null, null
+    )`
+        db.query(insertObjetiveQuery, (err, result) => {
+          if (err) {
+            res.status(400).json({ message: err.sqlMessage })
+          }
 
+          if (result)
+            res.status(201).json({
+              message: `Tarea insertada en objetivos`,
+            })
+        })
+      }
       if (resultTask) {
         let valueString = []
 

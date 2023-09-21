@@ -41,13 +41,15 @@ const ObjectivesTable = ({ data, label }) => {
   ])
 
   useEffect(() => {
-    if (label === 'Ord/Ext') {
+    if (label === 'Tareas de Perfil') {
       setColumns([
+        
         {
           Header: 'Perfiles',
           accessor: 'codigo_perfil',
-          Cell: ({ value }) => <Tooltip title={<span style={{ fontSize: "16px" }}>{value}</span>} placement="bottom"><span>{value}</span></Tooltip>
+          Cell: ({value}) => <Tooltip title={<span style={{ fontSize: "16px" }}>{value}</span>} placement="bottom"><span>{value}</span></Tooltip>
         },
+        
         ...columns,
       ])
     }
@@ -76,7 +78,7 @@ const ObjectivesTable = ({ data, label }) => {
   const exportPDF = () => {
     const doc = new jsPDF("p", "mm", "a3")
     doc.text('Objetivos de tareas', 20, 10)
-    if (label == 'Ord/Ext') {
+    if (label == 'Tareas de Perfil') {
       doc.autoTable({
         body: data,
         columns: [
@@ -285,6 +287,18 @@ const ObjectivesTable = ({ data, label }) => {
     }
     doc.save('objetivos.pdf')
   }
+  // const getTrProps = (state, data, instance) => {
+  //   if (data) {
+  //     return {
+  //       style: {
+  //         background: data.indicador == 'SI' ? 'red' : 'green',
+  //         color: 'white'
+  //       }
+  //     }
+  //   }
+  //   return {};
+  // }
+  
 
   return (
     <GridContainer>
@@ -296,8 +310,14 @@ const ObjectivesTable = ({ data, label }) => {
               <Assignment />
             </CardIcon>
           </CardHeader>
+         
           <CardBody>
-            {!!data.length ? <ReactTable columns={columns} data={data} /> : <h3>No hay objetivos para mostrar</h3>}
+            {console.log(data)}
+            {!!data.length ? <ReactTable columns={columns} data={data} color={'blue'}  /> : <h3>No hay objetivos para mostrar</h3>}
+            
+            {/* AQUÍ PINTO LOS DATOS, Y HAGO UN MAP PARA RECOGER EL QUE QUIERA Y MANEJAR SEGÚN LOS VALORES RECIBIDOS */}
+            {console.log(data)}
+            {console.log(data.map(e => e.id_objetivo))}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
                 {excel && (
                   <ExcelFile

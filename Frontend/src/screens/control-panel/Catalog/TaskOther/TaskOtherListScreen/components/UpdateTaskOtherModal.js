@@ -21,6 +21,7 @@ import { PROFILE_LIST_RESET } from 'redux/constants/profileConstants'
 import { getProfiles } from 'redux/actions/profileActions'
 import { getTaskProfiles } from 'redux/actions/taskOtherActions'
 import { taskOtherUpdateInfo } from 'redux/actions/taskOtherActions'
+import { deleteShared } from 'redux/actions/sharedActions'
 import { TASK_OTHER_LIST_RESET, TASK_OTHER_UPDATE_RESET, TASK_PROFILES_RESET } from 'redux/constants/taskOtherConstants'
 import styles from '../styles/updateTaskOtherModalStyles'
 import SweetAlert from 'react-bootstrap-sweetalert'
@@ -38,6 +39,10 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   const [profilesDataError, setProfileError] = useState('')
   const [profilesData, setProfilesData] = useState([])
   const { successProfileList, loadingProfileList, profiles } = useSelector((state) => state.profileList)
+
+  const [originShared, setOriginShared] = useState('')
+
+  const { successSharedDelete, loadingSharedDelete, errorSharedDelete } = useSelector((state) => state.sharedDelete)
 
   const { loadingTaskProfiles, taskProfilesData } = useSelector((state) => state.taskProfiles)
 
@@ -113,9 +118,17 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   }, [indicadorAlert]); // Este efecto se dispara cada vez que indicadorAlert cambia
 
   const updateTaskHandler = (e) => {
+
     e.preventDefault();
+    
+let option=true
+
+
     if (profilesData.length === 0) {
       return setProfileError('Por favor seleccione un Perfil.');
+    }
+    if (infoTaskOther.compartida == 'NO'&& originShared == 'SI') {
+      option=window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
     }
     const data = {
       ...infoTaskOther,
@@ -142,54 +155,13 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
       console.log(data)
       dispatch(taskOtherUpdateInfo(data));
     }
-  };
+    if (option) {
+      
+      dispatch(taskOtherUpdateInfo(data))
+      dispatch(deleteShared(infoTaskOther.id_tarea))
+    }
+  }
 
-  // const updateTaskHandlerOriginal = (e) => {
-  //   e.preventDefault()
-  //   if (profilesData.length === 0) {
-  //     return setProfileError('Por favor seleccione un Perfil.')
-  //   }
-  //   const data = {
-  //     ...infoTaskOther,
-  //     profilesData,
-  //   }
-  //   dispatch(taskOtherUpdateInfo(data))
-  // }
-
-  // const updateTaskHandler = (e) => {
-  //   const data = {
-  //     ...infoTaskOther,
-  //     profilesData,
-  //   }
-  //   console.log(data)
-  //   console.log(data.indicador)
-  //   if (data.indicador == "NO") {
-  //     setIndicadorAlert(true)
-  //     console.log("Debería ser True: " + indicadorAlert)
-  //     setAlertupdateIndicador(
-  //       <SweetAlert
-  //         info
-  //         style={{ display: 'block', marginTop: '-100px' }}
-  //         title='Aviso!'
-  //         onConfirm={() => updateTaskHandlerOriginal(false)}
-  //         onCancel={() => setAlertupdateIndicador(null)}
-  //         confirmBtnCssClass={classes.confirmBtnCssClass}
-  //       >
-  //         Si modifica el atributo de esta tarea a indicador=no, los valores de los objetivos asignados se borrarán, desea continuar?
-  //       </SweetAlert>
-
-  //     )
-  //   } 
-  //   console.log(indicadorAlert)
-  //   if (indicadorAlert) {
-  //     console.log("PASA")
-  //     dispatch(taskOtherUpdateInfo(data))
-
-  //   }else {
-  //     console.log("pororpr")
-  //     updateTaskHandlerOriginal(e)
-  //   }
-  // }
 
   const handleSelector = (e) => {
     const {
@@ -333,7 +305,10 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   id='compartida'
                   value={infoTaskOther.compartida}
                   label='Compartida'
-                  onChange={(e) => setInfoTaskOther({ ...infoTaskOther, compartida: e.target.value })}
+                  onChange={(e) => {
+                    setOriginShared(infoTaskOther.compartida)
+                    setInfoTaskOther({ ...infoTaskOther, compartida: e.target.value })}
+                }
                 >
                   <MenuItem value={'SI'}>SI</MenuItem>
                   <MenuItem value={'NO'}>NO</MenuItem>

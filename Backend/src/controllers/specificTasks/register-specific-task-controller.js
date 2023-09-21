@@ -2,7 +2,8 @@
 
 const asyncHandler = require('express-async-handler')
 const db = require('../../config/mysql/db')
-const { getAllRecords } = require('../../utils/queryPromises')
+const { getAllRecords, queryPromise } = require('../../utils/queryPromises')
+
 // @desc    Create specific task
 // @route   POST /api/tareasespecificas
 // @access  Private/Admin
@@ -38,6 +39,8 @@ const registerSpecificTask = asyncHandler(async (req, res) => {
 
   const idTipoTarea = 3
 
+  
+
   db.query(
     ` INSERT INTO tareas (
        descripcion_tarea,
@@ -71,11 +74,51 @@ const registerSpecificTask = asyncHandler(async (req, res) => {
       if (err) {
         res.status(400).json({ message: err.sqlMessage })
       }
-      if (result)
+      if (result) {
+       db.query( `
+       INSERT INTO objetivos (
+           id_tarea,
+           dificultad,
+           unidades_minimo,
+           unidades_medio,
+           unidades_maximo,
+           porcentaje_entrada_minimo,
+           porcentaje_entrada_medio,
+           porcentaje_entrada_maximo,
+           tiempo_minimo,
+           tiempo_medio,
+           tiempo_maximo,
+           porcentaje_jornada_minimo,
+           porcentaje_jornada_medio,
+           porcentaje_jornada_maximo,
+           magnitud_temporal,
+           fecha_ultima_modificacion) VALUES (
+           ${result.insertId},
+           '',
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null,
+           null
+           )
+         `,
+   )
+        console.log(result.insertId)
         res.status(201).json({
           message: 'Tarea específica creada',
         })
+      }
     }
+
   )
 })
 

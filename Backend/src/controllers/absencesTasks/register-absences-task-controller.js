@@ -39,6 +39,7 @@ const registerAbsencesTask = asyncHandler(async (req, res) => {
     if (resultExistDescription.length) {
       return res.status(400).json({ message: 'Ya existe una tarea Ausencia con esa descripción' })
     }
+   
 
     const insertAbsencesTaskQuery = `
     INSERT INTO tareas (

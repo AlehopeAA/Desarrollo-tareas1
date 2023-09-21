@@ -15,6 +15,8 @@ const {
 const getOrdExtOtherTasksObjetives = asyncHandler(async (req, res) => {
   const { id_puesto, permiso } = req.user
 
+  console.log('HOLAAAA');
+
   const isAdminOrSuper = permiso.includes(ADMIN_ROLE) || permiso.includes(SUPER_ROLE)
   const isManager = permiso.includes(GESTOR_DE_PERFILES_ROLE)
 
@@ -79,6 +81,7 @@ const getOrdExtOtherTasksObjetives = asyncHandler(async (req, res) => {
         )
       )
     ORDER BY tareas.descripcion_tarea`
+  
 
     db.query(managerTasks, (err, result) => {
       if (err) {
@@ -97,7 +100,7 @@ const getOrdExtOtherTasksObjetives = asyncHandler(async (req, res) => {
           })
         }
       })
-
+      console.log(tasksWithoutRepeating[0])
       res.status(200).json(tasksWithoutRepeating)
     })
   }

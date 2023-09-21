@@ -1,4 +1,8 @@
 import {
+  OBJETIVE_TASK_REQUEST,
+  OBJETIVE_TASK_SUCCESS,
+  OBJETIVE_TASK_FAIL,
+  OBJETIVE_TASK_RESET,
   OBJETIVES_SPECIFIC_REGISTER_REQUEST,
   OBJETIVES_SPECIFIC_REGISTER_SUCCESS,
   OBJETIVES_SPECIFIC_REGISTER_RESET,
@@ -55,6 +59,30 @@ export const objetiveSpecificListReducer = (state = {}, action) => {
         errorObjetiveSpecificList: action.payload,
       }
     case OBJETIVES_SPECIFIC_LIST_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const objetivesByTaskReducer = (state = {}, action) => {
+  console.log(action.type)
+  switch (action.type) {
+    case OBJETIVE_TASK_REQUEST:
+      return { loadingObjetivesByTask: true }
+    case OBJETIVE_TASK_SUCCESS:
+      console.log(action.payload.result[0])
+      return {
+        loadingObjetivesByTask: false,
+        successObjetivesByTask: true,
+        objetivesByTask: action.payload.result,
+      }
+    case OBJETIVE_TASK_FAIL:
+      return {
+        loadingObjetivesByTask: false,
+        errorObjetivesByTask: action.payload,
+      }
+    case OBJETIVE_TASK_RESET:
       return {}
     default:
       return state

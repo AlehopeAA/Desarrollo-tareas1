@@ -15,6 +15,8 @@ const {
 const getOrdExtOtherTasks = asyncHandler(async (req, res) => {
   const { id_puesto, permiso } = req.user
 
+  
+
   const isAdminOrSuper = permiso.includes(ADMIN_ROLE) || permiso.includes(SUPER_ROLE)
   const isManager = permiso.includes(GESTOR_DE_PERFILES_ROLE)
 

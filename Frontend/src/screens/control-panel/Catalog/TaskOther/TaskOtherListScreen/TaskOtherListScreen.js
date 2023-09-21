@@ -5,7 +5,8 @@ import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import { Card, makeStyles, Tooltip } from '@material-ui/core'
 import { Visibility, Delete, Edit } from '@material-ui/icons'
-import { Lightbulb, LightbulbOutlined, Calculate } from '@mui/icons-material'
+import { Lightbulb, LightbulbOutlined, Calculate, DataObject } from '@mui/icons-material'
+import SweetAlert from 'react-bootstrap-sweetalert'
 import CardBody from 'components/Card/CardBody'
 import GridContainer from 'components/Grid/GridContainer'
 import GridItem from 'components/Grid/GridItem'
@@ -18,10 +19,12 @@ import SnackbarContent from 'components/Snackbar/SnackbarContent'
 import UpdateTaskModal from './components/UpdateTaskOtherModal'
 import DeleteTaskModal from './components/DeleteTaskOtherModal'
 import ViewHistorical from './components/ViewHistoricalModal'
+import ViewObjectiveTask from 'components/Modal/ObjectivesModals/ViewObjectiveTaskInfo'
 import { getTaskOthers } from 'redux/actions/taskOtherActions'
 import { TASK_OTHER_LIST_RESET } from 'redux/constants/taskOtherConstants'
 import { TASK_HISTORICAL_RESET } from 'redux/constants/taskOtherConstants'
 import styles from './styles/taskOtherListScreenStyles'
+import { getObjetivesByTask } from 'redux/actions/objetivesSpecificActions'
 
 const useStyles = makeStyles(styles)
 
@@ -48,17 +51,83 @@ const TaskOtherListScreen = () => {
   const [viewHistoricalModal, setViewHistoricalModal] = useState(false)
   const [viewListModal, setViewListModal] = useState(true)
   const [showHistorical, setShowHistorical] = useState({})
+  const [viewObjetives, setViewObjetives] = useState(false)
+  const [showObjetives, setShowObjetives] = useState({})
+
+  const [alert, setAlert] = useState(null)
 
   const { loadingTaskOtherList, taskOthers, successTaskOtherList, errorTaskOtherList } = useSelector((state) => state.taskOtherList)
 
+  const { loadingObjetivesByTask, objetivesByTask, successObjetivesByTask, errorObjetivesByTask, } = useSelector((state) => state.objetivesByTask)
+  console.log('here');
+  console.log(objetivesByTask)
+  // useEffect(()=>{
+  //   console.log(successObjetivesByTask)
+  //   if (successObjetivesByTask) {
+  //     setViewObjetives(true)
+  //     setShowObjetives(objetivesByTask)
+  //   }
+  // },[successObjetivesByTask])
+
+  // const confirmSuccess = () => {
+  //   setAlert(null)
+  //   // dispatch({ type: PROFILE_LIST_RESET })
+  //   // dispatch({ type: TASK_REGISTER_RESET })
+  //   // setTaskType('')
+  //   // dispatch({ type: TASK_LIST_BY_PROFILE_ID_RESET })
+  //   // dispatch({ type: TASK_LIST_DUPLICATE_BY_PROFILE_CLEAN })    
+  // }
+
+  // const hideAlert = () => {
+  //   setAlert(null)
+  // }
+
   useEffect(() => {
+    // console.log(objetivesByTask)
+    if (successObjetivesByTask && objetivesByTask[0] != null) {
+      verObjetivos()
+    } else if (successObjetivesByTask && objetivesByTask[0] == null) {
+
+
+      // console.log(objetivesByTask)
+      window.alert('Esta tarea no tiene objetivos asignados')
+    }
+
+
+  }, [successObjetivesByTask])
+
+  useEffect(() => {
+
     if (successTaskOtherList) {
       const list = taskOthers.map((item) => {
         return {
+
           ...item,
           profile: item?.codigo_perfil?.toString().replaceAll(',', ' ; ') || '',
           actions: (
             <div className='actions-right'>
+              <Button
+                justIcon
+                round
+                size='sm'
+                simple
+                onClick={() => 
+                  handleObjetive(item)
+               
+                  //   .then(() => {
+                  //   setShowObjetives(objetivesByTask) 
+                  //   setViewObjetives(true)
+                  // })
+                
+                }
+
+                color='behance'
+                className='edit'
+              >
+                <Tooltip title='Ver objetivos'>
+                  <DataObject />
+                </Tooltip>
+              </Button>
               <Button
                 justIcon
                 round
@@ -129,7 +198,7 @@ const TaskOtherListScreen = () => {
   useEffect(() => {
     return () => dispatch({ type: TASK_OTHER_LIST_RESET })
   }, [dispatch])
-  
+
   useEffect(() => {
     if (pdf) {
       exportPDF()
@@ -142,25 +211,25 @@ const TaskOtherListScreen = () => {
     doc.autoTable({
       body: data,
       columns: [
-        { 
-          header: 'ID TAREA', 
-          dataKey: 'id_tarea' 
+        {
+          header: 'ID TAREA',
+          dataKey: 'id_tarea'
         },
-        { 
-          header: 'PERFIL', 
-          dataKey: 'profile' 
-        },        
-        { 
-          header: 'DESCRIPCION', 
-          dataKey: 'descripcion_tarea' 
-        },        
-        { 
-          header: 'TIPO DE TAREA', 
-          dataKey: 'id_tipo_tarea' 
+        {
+          header: 'PERFIL',
+          dataKey: 'profile'
         },
-        { 
-          header: 'INDICADOR', 
-          dataKey: 'indicador' 
+        {
+          header: 'DESCRIPCION',
+          dataKey: 'descripcion_tarea'
+        },
+        {
+          header: 'TIPO DE TAREA',
+          dataKey: 'id_tipo_tarea'
+        },
+        {
+          header: 'INDICADOR',
+          dataKey: 'indicador'
         },
         {
           header: 'CUANTIFICABLE',
@@ -221,11 +290,51 @@ const TaskOtherListScreen = () => {
     setShowDeleteTask({})
   }
 
+  const handleObjetive = (tarea) => {
+
+
+    dispatch(getObjetivesByTask(tarea.id_tarea))
+    // setTimeout(() => {
+    //   test()
+    // }, 3000);
+    //     console.log('here');
+    // console.log(objetivesByTask)
+    // console.log('tareatareatarea')
+    // console.log(showObjetives)
+    // .then(() => {
+    // })
+    // if (objetivesByTask) {
+
+    // .then( test())
+
+    // }
+
+
+    // setShowObjetives(objetivesByTask)
+
+
+    //   setViewObjetives(true)
+
+
+  }
+
+  const verObjetivos = () => {
+    setShowObjetives(objetivesByTask[0])
+    setViewObjetives(true)
+  }
+  const closeObjetives = () => {
+    console.log(showObjetives)
+    setViewObjetives(false)
+    setShowObjetives({})
+    console.log('cierra')
+  }
   const showViewTaskHandler = (id) => {
     const task = taskOthers.find((task) => task.id_tarea === id)
     setShoeViewInfo(task)
     setViewInfo(true)
   }
+
+
   const closeViewInfoModal = () => {
     setViewInfo(false)
     setShoeViewInfo({})
@@ -267,101 +376,102 @@ const TaskOtherListScreen = () => {
 
   return (
     <>
+      {/* {alert} */}
       {viewListModal && (
-      <GridContainer>
-        <GridItem xs={12} className={classes.rootItem}>
-          <Card>
-            <CardBody>
-              {loadingTaskOtherList ? (
-                'Cargando Tareas...'
-              ) : (
-                <ReactTable
-                  columns={[
-                    {
-                      Header: 'PERFILES',
-                      accessor: 'profile',
-                      Cell: ({ value }) => <Tooltip title={<span style={{ fontSize: "16px" }}>{value}</span>} placement="bottom"><span>{value}</span></Tooltip>
-                    },
-                    {
-                      Header: 'DESCRIPCION',
-                      accessor: 'descripcion_tarea',
-                      Cell: ({ value }) => <Tooltip title={<span style={{ fontSize: "16px" }}>{value}</span>} placement="bottom"><span>{value}</span></Tooltip>
-                    },
-                    {
-                      Header: 'INDICADOR',
-                      accessor: 'indicador',
-                    },
-                    {
-                      Header: 'CUANTIFICABLE',
-                      accessor: 'cuantificable',
-                    },
-                    {
-                      Header: 'ENTRADA',
-                      accessor: 'entrada',
-                    },
-                    {
-                      Header: 'COMPARTIDA',
-                      accessor: 'compartida',
-                    },
-                    {
-                      Header: 'DIFICULTAD',
-                      accessor: 'dificultad',
-                    },
-                    {
-                      Header: 'ACUMULATIVA',
-                      accessor: 'acumulativa',
-                    },
-                    {
-                      Header: 'COD. TRAZABILIDAD',
-                      accessor: 'codigo_trazabilidad',
-                    },                    
-                    {
-                      Header: 'ACCIONES',
-                      accessor: 'actions',
-                    },
-                  ]}
-                  data={data}
-                />
-              )}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                {excel && (
-                  <ExcelFile
-                    element={<Button color='primary'>Exportar Excel</Button>}
-                    filename='tareas'
-                    hideElement={true}
-                  >
-                    <ExcelFile.ExcelSheet data={data} name='Tareas'>
-                      <ExcelFile.ExcelColumn label='ID TAREA' value='id_tarea' />
-                      <ExcelFile.ExcelColumn label='PERFIL' value='profile' />
-                      <ExcelFile.ExcelColumn label='DESCRIPCION' value='descripcion_tarea' />
-                      <ExcelFile.ExcelColumn label='TIPO DE TAREA' value='id_tipo_tarea' />
-                      <ExcelFile.ExcelColumn label='INDICADOR' value='indicador' />
-                      <ExcelFile.ExcelColumn label='CUANTIFICABLE' value='cuantificable' />
-                      <ExcelFile.ExcelColumn label='ENTRADA' value='entrada' />
-                      <ExcelFile.ExcelColumn label='DIFICULTAD' value='dificultad' />
-                      <ExcelFile.ExcelColumn label='ACUMULATIVA' value='acumulativa' />
-                      <ExcelFile.ExcelColumn label='CÓDIGO TRAZABILIDAD' value='codigo_trazabilidad' />                      
-                    </ExcelFile.ExcelSheet>
-                  </ExcelFile>
+        <GridContainer>
+          <GridItem xs={12} className={classes.rootItem}>
+            <Card>
+              <CardBody>
+                {loadingTaskOtherList ? (
+                  'Cargando Tareas...'
+                ) : (
+                  <ReactTable
+                    columns={[
+                      {
+                        Header: 'PERFILES',
+                        accessor: 'profile',
+                        Cell: ({ value }) => <Tooltip title={<span style={{ fontSize: "16px" }}>{value}</span>} placement="bottom"><span>{value}</span></Tooltip>
+                      },
+                      {
+                        Header: 'DESCRIPCION',
+                        accessor: 'descripcion_tarea',
+                        Cell: ({ value }) => <Tooltip title={<span style={{ fontSize: "16px" }}>{value}</span>} placement="bottom"><span>{value}</span></Tooltip>
+                      },
+                      {
+                        Header: 'INDICADOR',
+                        accessor: 'indicador',
+                      },
+                      {
+                        Header: 'CUANTIFICABLE',
+                        accessor: 'cuantificable',
+                      },
+                      {
+                        Header: 'ENTRADA',
+                        accessor: 'entrada',
+                      },
+                      {
+                        Header: 'COMPARTIDA',
+                        accessor: 'compartida',
+                      },
+                      {
+                        Header: 'DIFICULTAD',
+                        accessor: 'dificultad',
+                      },
+                      {
+                        Header: 'ACUMULATIVA',
+                        accessor: 'acumulativa',
+                      },
+                      {
+                        Header: 'COD. TRAZABILIDAD',
+                        accessor: 'codigo_trazabilidad',
+                      },
+                      {
+                        Header: 'ACCIONES',
+                        accessor: 'actions',
+                      },
+                    ]}
+                    data={data}
+                  />
                 )}
-                <Button color='primary' onClick={() => setDownloadExcel(true)} style={{ marginLeft: '10px' }}>
-                  Exportar EXCEL
-                </Button>
-                <Button color='primary' onClick={() => setDownloadPdf(true)} style={{ marginLeft: '10px' }}>
-                  Exportar PDF
-                </Button>
-              </div>
-            </CardBody>
-            {errorTaskOtherList && (
-              <GridContainer>
-                <GridItem xs={12}>
-                  <SnackbarContent message={errorTaskOtherList} color='danger' />
-                </GridItem>
-              </GridContainer>
-            )}
-          </Card>
-        </GridItem>
-      </GridContainer>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                  {excel && (
+                    <ExcelFile
+                      element={<Button color='primary'>Exportar Excel</Button>}
+                      filename='tareas'
+                      hideElement={true}
+                    >
+                      <ExcelFile.ExcelSheet data={data} name='Tareas'>
+                        <ExcelFile.ExcelColumn label='ID TAREA' value='id_tarea' />
+                        <ExcelFile.ExcelColumn label='PERFIL' value='profile' />
+                        <ExcelFile.ExcelColumn label='DESCRIPCION' value='descripcion_tarea' />
+                        <ExcelFile.ExcelColumn label='TIPO DE TAREA' value='id_tipo_tarea' />
+                        <ExcelFile.ExcelColumn label='INDICADOR' value='indicador' />
+                        <ExcelFile.ExcelColumn label='CUANTIFICABLE' value='cuantificable' />
+                        <ExcelFile.ExcelColumn label='ENTRADA' value='entrada' />
+                        <ExcelFile.ExcelColumn label='DIFICULTAD' value='dificultad' />
+                        <ExcelFile.ExcelColumn label='ACUMULATIVA' value='acumulativa' />
+                        <ExcelFile.ExcelColumn label='CÓDIGO TRAZABILIDAD' value='codigo_trazabilidad' />
+                      </ExcelFile.ExcelSheet>
+                    </ExcelFile>
+                  )}
+                  <Button color='primary' onClick={() => setDownloadExcel(true)} style={{ marginLeft: '10px' }}>
+                    Exportar EXCEL
+                  </Button>
+                  <Button color='primary' onClick={() => setDownloadPdf(true)} style={{ marginLeft: '10px' }}>
+                    Exportar PDF
+                  </Button>
+                </div>
+              </CardBody>
+              {errorTaskOtherList && (
+                <GridContainer>
+                  <GridItem xs={12}>
+                    <SnackbarContent message={errorTaskOtherList} color='danger' />
+                  </GridItem>
+                </GridContainer>
+              )}
+            </Card>
+          </GridItem>
+        </GridContainer>
       )}
       {activeModal && (
         <ActiveAndDesactiveTaskModal
@@ -386,11 +496,20 @@ const TaskOtherListScreen = () => {
           showUpdateTask={showUpdateTask}
         />
       )}
+      {/* <ViewTaskInfoModal viewInfo={viewInfo} closeViewInfoModal={closeViewInfoModal} info={showViewInfo} /> */}
       {viewInfo && (
-        <ViewTaskInfoModal 
-          viewInfo={viewInfo} 
-          closeViewInfoModal={closeViewInfoModal} 
-          info={showViewInfo} 
+        <ViewTaskInfoModal
+          viewInfo={viewInfo}
+          closeViewInfoModal={closeViewInfoModal}
+          info={showViewInfo}
+        />
+      )}
+      {/* {console.log(showObjetives)} */}
+      {viewObjetives && (
+        <ViewObjectiveTask
+          closeViewActivityInfoModal={closeObjetives}
+          viewActivityInfo={handleObjetive}
+          info={showObjetives}
         />
       )}
       {deleteTaskModal && (

@@ -10,6 +10,7 @@ import SnackbarContent from 'components/Snackbar/SnackbarContent'
 import { taskSpecificUpdateInfo } from 'redux/actions/taskSpecificActions'
 import { TASK_SPECIFIC_LIST_RESET, TASK_SPECIFIC_UPDATE_RESET } from 'redux/constants/taskSpecificConstants'
 import styles from '../styles/updateTaskSpecificModalStyles'
+import { deleteShared } from 'redux/actions/sharedActions'
 
 const useStyles = makeStyles(styles)
 
@@ -19,6 +20,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
 
   const [infoTask, setInfoTask] = useState(showUpdateTask)
   const [codTrazability, setCodTrazability] = useState(showUpdateTask.codigo_trazabilidad || 'NO')
+  const [originShared, setOriginShared] = useState('')
 
   const { loadingTaskSpecificUpdate, errorTaskSpecificUpdate, successTaskSpecificUpdate } = useSelector(
     (state) => state.taskSpecificUpdate
@@ -40,7 +42,23 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
 
   const updateTaskHandler = (e) => {
     e.preventDefault()
-    dispatch(taskSpecificUpdateInfo(infoTask))
+
+    let option = true
+
+
+    if (infoTask.compartida == 'NO'&& originShared == 'SI') {
+      option=window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
+    }
+
+    if (option) {
+      
+      dispatch(taskSpecificUpdateInfo(infoTask))
+      dispatch(deleteShared(infoTask.id_tarea))
+    }
+
+
+    // dispatch(taskSpecificUpdateInfo(infoTask))
+
   }
   const handleSelector = (e) => {
     const {
@@ -141,7 +159,10 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   id='compartida'
                   value={infoTask.compartida}
                   label='Compartida'
-                  onChange={(e) => setInfoTask({ ...infoTask, compartida: e.target.value })}
+                  onChange={(e) => {
+setOriginShared(infoTask.compartida)
+                    setInfoTask({ ...infoTask, compartida: e.target.value })}
+                  }
                 >
                   <MenuItem value={'SI'}>SI</MenuItem>
                   <MenuItem value={'NO'}>NO</MenuItem>
