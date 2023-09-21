@@ -38,13 +38,19 @@ const getJobPositionById = asyncHandler(async (req, res) => {
   ORDER BY puestos_trabajo.nombre, puestos_trabajo.apellido1, puestos_trabajo.apellido2
   `
   const profilesByUserQuery = `
-    SELECT perfiles.codigo_perfil , perfiles.id_perfil 
-    FROM perfiles_puesto 
-    INNER JOIN perfiles 
-    ON perfiles_puesto.id_perfil = perfiles.id_perfil 
+  SELECT perfiles.codigo_perfil, perfiles.id_perfil,
+  (SELECT COUNT(*)
+   FROM actividades.tareas_perfil
+   LEFT JOIN actividades.tareas
+   ON actividades.tareas.id_tarea = actividades.tareas_perfil.id_tarea
+   WHERE actividades.tareas.compartida = 'SI' AND actividades.tareas_perfil.id_perfil = perfiles.id_perfil) AS count_tareas_compartidas
+    FROM perfiles_puesto
+    INNER JOIN perfiles
+    ON perfiles_puesto.id_perfil = perfiles.id_perfil
     WHERE perfiles_puesto.id_puesto = ${id}
     AND perfiles.activo = 'SI'
-    ORDER BY perfiles.codigo_perfil
+    ORDER BY perfiles.codigo_perfil;
+
   `
 const favoritesTasksQuery = `
   SELECT tareas.*, "SI" favorita 
@@ -70,7 +76,7 @@ const favoritesTasksQuery = `
   ORDER BY tareas.descripcion_tarea`
 
   const notFavoritesTasksQuery = `
-  SELECT tareas.*, "NO" favorita FROM tareas
+  SELECT tareas.*, tipos_tarea.tipo_tarea, "NO" favorita FROM tareas
   INNER JOIN tipos_tarea ON tareas.id_tipo_tarea = tipos_tarea.id_tipo_tarea 
   WHERE id_tarea NOT IN (SELECT tareas_favoritas.id_tarea FROM tareas_favoritas WHERE tareas_favoritas.id_puesto = ${id})
   AND tareas.activo='SI'

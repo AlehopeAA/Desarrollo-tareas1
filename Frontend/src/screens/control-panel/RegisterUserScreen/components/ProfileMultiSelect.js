@@ -36,7 +36,7 @@ const ProfileMultiSelect = ({ profilesData, setProfilesData }) => {
       target: { value },
     } = event
     if (profilesData.map((profile) => profile.id_perfil).indexOf(value[value.length - 1].id_perfil) === -1) {
-      setProfilesData(value)
+      setProfilesData(value)      
     } else {
       setProfilesData(profilesData.filter((profile) => profile.id_perfil !== value[value.length - 1]?.id_perfil))
     }

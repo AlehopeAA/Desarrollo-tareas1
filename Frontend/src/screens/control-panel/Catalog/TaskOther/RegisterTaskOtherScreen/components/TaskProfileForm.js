@@ -165,6 +165,7 @@ const TaskProfileForm = ({ taskByProfile }) => {
               </FormControl>
             </GridItem>
             <GridItem xs={12} md={6}>
+
               <FormControl fullWidth>
                 <InputLabel id='entrada'>Entrada</InputLabel>
                 <Select

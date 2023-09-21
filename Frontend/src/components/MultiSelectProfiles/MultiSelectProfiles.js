@@ -19,6 +19,8 @@ const MenuProps = {
 }
 
 const MultiSelectProfile = ({ label, data, handleChangeMultiData, multiData }) => {
+  console.log(data.profile)
+
   return (
     <>
       {data ? (
@@ -38,7 +40,7 @@ const MultiSelectProfile = ({ label, data, handleChangeMultiData, multiData }) =
               data.map((profile) => (
                 <MenuItem
                   key={profile.id_perfil}
-                  value={{ id_perfil: profile.id_perfil, codigo_perfil: profile.codigo_perfil }}
+                  value={{ id_perfil: profile.id_perfil, codigo_perfil: profile.codigo_perfil, count_tareas_compartidas: profile.count_tareas_compartidas }}
                 >
                   <Checkbox checked={multiData.map((data) => data.id_perfil).indexOf(profile.id_perfil) > -1} />
                   <ListItemText primary={profile.codigo_perfil} />

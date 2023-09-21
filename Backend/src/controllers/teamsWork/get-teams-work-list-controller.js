@@ -14,7 +14,10 @@ const {
 // @route   GET /api/equipostrabajo
 // @access  responsible/validator/manager
 const getTeamsWorkList = asyncHandler(async (req, res) => {
+
   const { id_puesto, permiso } = req.user
+  console.log(id_puesto)
+  console.log(permiso)
 
   const isAdminOrSuper = permiso.includes(ADMIN_ROLE) || permiso.includes(SUPER_ROLE)
   const isResponsible = permiso.includes(RESPONSABLE_ROLE)
@@ -24,12 +27,22 @@ const getTeamsWorkList = asyncHandler(async (req, res) => {
   const usersWithoutRepeating = []
 
   if (isAdminOrSuper) {
-    const getAllJobPositions = `
-      SELECT puestos_trabajo.*, perfiles.codigo_perfil
-      FROM puestos_trabajo  
-      LEFT JOIN perfiles_puesto ON puestos_trabajo.id_puesto = perfiles_puesto.id_puesto
-      LEFT JOIN perfiles ON perfiles_puesto.id_perfil = perfiles.id_perfil
-      ORDER BY puestos_trabajo.activo desc, puestos_trabajo.nombre, puestos_trabajo.apellido1, puestos_trabajo.apellido2
+    const getAllJobPositions = `SELECT 
+    puestos_trabajo.*, 
+    perfiles.codigo_perfil,
+    (
+        SELECT COUNT(*)
+        FROM actividades.tareas_perfil
+        LEFT JOIN actividades.tareas
+        ON actividades.tareas.id_tarea = actividades.tareas_perfil.id_tarea
+        WHERE actividades.tareas.compartida = 'SI'
+        AND actividades.tareas_perfil.id_perfil = perfiles.id_perfil
+    ) AS count_tareas_compartidas
+FROM puestos_trabajo  
+LEFT JOIN perfiles_puesto ON puestos_trabajo.id_puesto = perfiles_puesto.id_puesto
+LEFT JOIN perfiles ON perfiles_puesto.id_perfil = perfiles.id_perfil
+ORDER BY puestos_trabajo.activo desc, puestos_trabajo.nombre, puestos_trabajo.apellido1, puestos_trabajo.apellido2
+
       `
 
     db.query(getAllJobPositions, (err, result) => {
@@ -46,10 +59,13 @@ const getTeamsWorkList = asyncHandler(async (req, res) => {
           usersWithoutRepeating.push({
             ...user,
             codigo_perfil: repeatUsers.map((userCod) => userCod.codigo_perfil),
+            tareas_compartidas: repeatUsers.map((userRepeat) => ({
+              count_tareas_compartidas: userRepeat.count_tareas_compartidas,
+              codigo_perfil: userRepeat.codigo_perfil,
+            })),
           })
         }
       })
-
       res.status(200).json(usersWithoutRepeating)
     })
   } else if (isManager) {
@@ -109,26 +125,26 @@ const getTeamsWorkList = asyncHandler(async (req, res) => {
       WHERE responsables.id_puesto_responsable = ${id_puesto}
       ORDER BY puestos_trabajo.activo desc, puestos_trabajo.nombre, puestos_trabajo.apellido1, puestos_trabajo.apellido2`
 
-      db.query(responsibleJobPositions, (err, result) => {
-        if (err) {
-          res.status(400).json({ message: err.sqlMessage })
+    db.query(responsibleJobPositions, (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.sqlMessage })
+      }
+
+      result.map((user) => {
+        const existInArray = usersWithoutRepeating.map((user) => user.id_puesto).indexOf(user.id_puesto) === -1
+
+        if (existInArray) {
+          const repeatUsers = result.filter((userRepeat) => userRepeat.id_puesto === user.id_puesto)
+
+          usersWithoutRepeating.push({
+            ...user,
+            codigo_perfil: repeatUsers.map((userCod) => userCod.codigo_perfil),
+          })
         }
-  
-        result.map((user) => {
-          const existInArray = usersWithoutRepeating.map((user) => user.id_puesto).indexOf(user.id_puesto) === -1
-  
-          if (existInArray) {
-            const repeatUsers = result.filter((userRepeat) => userRepeat.id_puesto === user.id_puesto)
-  
-            usersWithoutRepeating.push({
-              ...user,
-              codigo_perfil: repeatUsers.map((userCod) => userCod.codigo_perfil),
-            })
-          }
-        })
-  
-        res.status(200).json(usersWithoutRepeating)
       })
+
+      res.status(200).json(usersWithoutRepeating)
+    })
   } else if (isValidator) {
     const validatorJobPositions = `
       SELECT puestos_trabajo.*, perfiles.codigo_perfil
@@ -139,26 +155,26 @@ const getTeamsWorkList = asyncHandler(async (req, res) => {
       WHERE validadores.id_puesto_validador = ${id_puesto}
       ORDER BY puestos_trabajo.activo desc, puestos_trabajo.nombre, puestos_trabajo.apellido1, puestos_trabajo.apellido2`
 
-      db.query(validatorJobPositions, (err, result) => {
-        if (err) {
-          res.status(400).json({ message: err.sqlMessage })
+    db.query(validatorJobPositions, (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.sqlMessage })
+      }
+
+      result.map((user) => {
+        const existInArray = usersWithoutRepeating.map((user) => user.id_puesto).indexOf(user.id_puesto) === -1
+
+        if (existInArray) {
+          const repeatUsers = result.filter((userRepeat) => userRepeat.id_puesto === user.id_puesto)
+
+          usersWithoutRepeating.push({
+            ...user,
+            codigo_perfil: repeatUsers.map((userCod) => userCod.codigo_perfil),
+          })
         }
-  
-        result.map((user) => {
-          const existInArray = usersWithoutRepeating.map((user) => user.id_puesto).indexOf(user.id_puesto) === -1
-  
-          if (existInArray) {
-            const repeatUsers = result.filter((userRepeat) => userRepeat.id_puesto === user.id_puesto)
-  
-            usersWithoutRepeating.push({
-              ...user,
-              codigo_perfil: repeatUsers.map((userCod) => userCod.codigo_perfil),
-            })
-          }
-        })
-  
-        res.status(200).json(usersWithoutRepeating)
       })
+
+      res.status(200).json(usersWithoutRepeating)
+    })
   }
 })
 

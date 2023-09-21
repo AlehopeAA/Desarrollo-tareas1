@@ -7,10 +7,11 @@ import GridItem from 'components/Grid/GridItem'
 import TransferList from 'components/TransferList/TransferList'
 import Button from 'components/CustomButtons/Button'
 import AsignResponsibleFilter from './components/AsignResponsibleFilter'
-import { getTeamWorksResponsible, registerTeamWorkByResponsible } from 'redux/actions/teamWorkActions'
+import { getTeamWorksResponsible, registerTeamWorkByResponsible, registerTeamWorkProfileByValidatorOrResponsible } from 'redux/actions/teamWorkActions'
 import {
   TEAM_WORKS_BY_RESPONSIBLE_RESET,
   TEAM_WORK_REGISTER_BY_RESPONSIBLE_RESET,
+  PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_RESET,
 } from 'redux/constants/teamWorkConstants'
 import styles from './styles/asignResponsibleScreenStyles'
 
@@ -24,6 +25,8 @@ const AsignResponsibleScreen = () => {
   const [dataRight, setDataRight] = useState([])
   const [alert, setAlert] = useState(null)
   const [currentJobPositionId, setCurrentJobPositionId] = useState('')
+  const [findPerfiles, setFindPerfiles] = useState(false);
+
 
   const { loadingTeamWorksByResponsible, successTeamWorksByResponsible, teamWorksByResponsibleData } = useSelector(
     (state) => state.teamWorksByResponsible
@@ -33,25 +36,48 @@ const AsignResponsibleScreen = () => {
     (state) => state.teamWorkRegisterByResponsible
   )
 
+  const { successProfileByValidatorResponsibleRegister } = useSelector(
+    (state) => state.profileRegisterByValidator
+  )
+
   useEffect(() => {
     if (successTeamWorksByResponsible) {
-      const namesAndLastNamesRigth = []
-      const namesAndLastNamesLeft = []
+      if (findPerfiles === true) {
+        const perfilesRight = []
+        const pergilesLeft = []
+        teamWorksByResponsibleData?.assigned?.map((perfil) => {
+          perfilesRight.push({
+            id: perfil.id_perfil,
+            fullName: `${perfil?.codigo_perfil}`,
+          })
+        })
+        teamWorksByResponsibleData?.pendings?.map((perfil) => {
+          pergilesLeft.push({
+            id: perfil.id_perfil,
+            fullName: `${perfil?.codigo_perfil}`,
+          })
+        })
+        setDataRight(perfilesRight)
+        setDataLeft(pergilesLeft)
+      } else {
+        const namesAndLastNamesRigth = []
+        const namesAndLastNamesLeft = []
 
-      teamWorksByResponsibleData?.assigned?.map((jobPosition) => {
-        namesAndLastNamesRigth.push({
-          id: jobPosition.id_puesto,
-          fullName: `${jobPosition?.nombre} ${jobPosition?.apellido1} ${jobPosition?.apellido2}`,
+        teamWorksByResponsibleData?.assigned?.map((jobPosition) => {
+          namesAndLastNamesRigth.push({
+            id: jobPosition.id_puesto,
+            fullName: `${jobPosition?.nombre} ${jobPosition?.apellido1} ${jobPosition?.apellido2}`,
+          })
         })
-      })
-      teamWorksByResponsibleData?.pendings?.map((jobPosition) => {
-        namesAndLastNamesLeft.push({
-          id: jobPosition.id_puesto,
-          fullName: `${jobPosition?.nombre} ${jobPosition?.apellido1} ${jobPosition?.apellido2}`,
+        teamWorksByResponsibleData?.pendings?.map((jobPosition) => {
+          namesAndLastNamesLeft.push({
+            id: jobPosition.id_puesto,
+            fullName: `${jobPosition?.nombre} ${jobPosition?.apellido1} ${jobPosition?.apellido2}`,
+          })
         })
-      })
-      setDataRight(namesAndLastNamesRigth)
-      setDataLeft(namesAndLastNamesLeft)
+        setDataRight(namesAndLastNamesRigth)
+        setDataLeft(namesAndLastNamesLeft)
+      }
     }
   }, [successTeamWorksByResponsible])
 
@@ -78,6 +104,31 @@ const AsignResponsibleScreen = () => {
   }, [successTeamWorkByResponsibleRegister])
 
   useEffect(() => {
+    console.log(successProfileByValidatorResponsibleRegister)
+
+    if (successProfileByValidatorResponsibleRegister) {
+      setAlert(
+        <SweetAlert
+          success
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='GUARDADO!'
+          onConfirm={() => confirmSuccess()}
+          onCancel={() => hideAlert()}
+          confirmBtnCssClass={classes.button + ' ' + classes.success}
+        >
+          La asignacion de responsable/es ha sido guardada correctamente
+        </SweetAlert>
+      )
+      setDataLeft([])
+      setDataRight([])
+      setCurrentJobPositionId('')
+      dispatch({ type: TEAM_WORKS_BY_RESPONSIBLE_RESET })
+      dispatch({ type: PROFILE_REGISTER_BY_VALIDATORRESPONSIBLE_RESET })
+    }
+  }, [successProfileByValidatorResponsibleRegister])
+
+
+  useEffect(() => {
     return () => dispatch({ type: TEAM_WORKS_BY_RESPONSIBLE_RESET })
   }, [dispatch])
 
@@ -92,10 +143,16 @@ const AsignResponsibleScreen = () => {
     const teams = {
       pending: dataLeft,
       assigned: dataRight,
-      responsibleId: currentJobPositionId,
+      validatorId: currentJobPositionId,
     }
 
-    dispatch(registerTeamWorkByResponsible(teams))
+    console.log(teams)
+    if (findPerfiles === true) {
+
+      dispatch(registerTeamWorkProfileByValidatorOrResponsible(teams))
+    } else {
+      dispatch(registerTeamWorkByResponsible(teams))
+    }
   }
 
   const cancelAction = () => {
@@ -115,8 +172,13 @@ const AsignResponsibleScreen = () => {
             setCurrentJobPositionId={setCurrentJobPositionId}
           />
           <GridItem xs={4}>
-            <Button disabled={!currentJobPositionId} color='primary' onClick={() => dispatch(getTeamWorksResponsible(currentJobPositionId))}>
-              Buscar asignaciones
+            <Button disabled={!currentJobPositionId} color='primary' onClick={() => dispatch(getTeamWorksResponsible(currentJobPositionId), setFindPerfiles(true))}>
+              Buscar puestos de trabajo
+            </Button>
+          </GridItem>
+          <GridItem xs={2}>
+            <Button disabled={!currentJobPositionId} color='primary' onClick={() => dispatch(getTeamWorksResponsible(currentJobPositionId + "_P"), setFindPerfiles(true))}>
+              Buscar perfiles
             </Button>
           </GridItem>
         </GridContainer>
@@ -144,8 +206,8 @@ const AsignResponsibleScreen = () => {
                   {loadingTeamWorkByResponsibleRegister
                     ? `Cargando`
                     : successTeamWorkByResponsibleRegister
-                    ? `Hecho`
-                    : `Guardar`}
+                      ? `Hecho`
+                      : `Guardar`}
                 </Button>
                 <Button color='primary' onClick={() => cancelAction()}>
                   Cancelar
