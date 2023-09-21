@@ -81,6 +81,7 @@ export const objetivesAbsensesUpdateInfo = (objetiveAbsence) => async (dispatch,
         'Cache-Control': 'no-cache',
       },
     }
+    console.log("FEFEF")
     const { data } = await axios.put(`/api/objetivosausencias/${objetiveAbsence.id_objetivo}`, objetiveAbsence, config)
 
     dispatch({ type: OBJETIVES_ABSENCES_UPDATE_SUCCESS, payload: data })

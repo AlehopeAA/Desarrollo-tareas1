@@ -10,6 +10,7 @@ const { registerRecord } = require('../../utils/queryPromises')
 const updateSpecificObjetives = asyncHandler(async (req, res) => {
    const { id } = req.params
    const { id_puesto } = req.user
+   console.log("olla")
    const {
       dificulty,
       unit_min,

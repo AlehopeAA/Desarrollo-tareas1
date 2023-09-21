@@ -19,6 +19,9 @@ import SnackbarContent from 'components/Snackbar/SnackbarContent'
 import { taskAbsenceUpdateInfo } from 'redux/actions/taskAbsenceActions'
 import { TASK_ABSENCE_LIST_RESET, TASK_ABSENCE_UPDATE_RESET } from 'redux/constants/taskAbsenceConstants'
 import styles from '../styles/updateTaskAbsenceModalStyles'
+import SweetAlert from 'react-bootstrap-sweetalert'
+import { objetivesAbsensesUpdateInfo } from 'redux/actions/objetivesAbsencesActions'
+
 
 const useStyles = makeStyles(styles)
 
@@ -33,6 +36,17 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
     (state) => state.taskAbsenceUpdate
   )
 
+  const {
+    loadingObjetiveAbsenceUpdate,
+    successObjetiveAbsenceUpdate,
+    objetiveAbsenceUpdateData,
+    errorObjetiveAbsenceUpdate,
+  } = useSelector((state) => state.objetivesAbsencesUpdate)
+
+  const [alertIndicador, setAlertupdateIndicador] = useState(null)
+  const [indicadorAlert, setIndicadorAlert] = useState(false)
+
+
   useEffect(() => {
     if (successTaskAbsenceUpdate) {
       dispatch({ type: TASK_ABSENCE_LIST_RESET })
@@ -44,13 +58,44 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   }, [successTaskAbsenceUpdate])
 
   useEffect(() => {
+    if (indicadorAlert) {
+      console.log("despues del alert")
+
+      console.log(infoTaskAbsence)
+      dispatch(taskAbsenceUpdateInfo(infoTaskAbsence))
+      dispatch(objetivesAbsensesUpdateInfo(infoTaskAbsence))
+    }
+  }, [indicadorAlert]); // Este efecto se dispara cada vez que indicadorAlert cambia
+
+  useEffect(() => {
     dispatch({ type: TASK_ABSENCE_UPDATE_RESET })
   }, [dispatch])
 
   const updateTaskAbsenceHandler = (e) => {
     e.preventDefault()
-    dispatch(taskAbsenceUpdateInfo(infoTaskAbsence))
-  }
+    if (infoTaskAbsence.indicador == "NO") {
+      setAlertupdateIndicador(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => setIndicadorAlert(true)} // Aquí cambias indicadorAlert a true
+          onCancel={() => setAlertupdateIndicador(null)}
+          confirmBtnText='SI'
+          cancelBtnText='NO'
+          confirmBtnCssClass={classes.button + ' ' + classes.success}
+          cancelBtnCssClass={classes.button + ' ' + classes.danger}
+          showCancel
+        >
+          Si modifica el atributo de esta tarea a indicador=no, los valores de los objetivos asignados se borrarán, desea continuar?
+        </SweetAlert>
+      );
+    } else {
+      console.log(infoTaskAbsence)
+      dispatch(taskAbsenceUpdateInfo(infoTaskAbsence))
+    }
+  };
+
   const handleSelector = (e) => {
     const {
       target: { value },
@@ -66,6 +111,9 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
       aria-labelledby='notice-modal-slide-title'
       aria-describedby='notice-modal-slide-description'
     >
+      <div>
+        {alertIndicador}
+      </div>
       <form onSubmit={updateTaskAbsenceHandler} autoComplete='false'>
         <DialogTitle id='notice-modal-slide-title' disableTypography className={classes.modalHeader}>
           <Button
@@ -96,7 +144,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   required: true,
                 }}
               />
-            </GridItem>            
+            </GridItem>
             <GridItem xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel id='indicador'>Indicador</InputLabel>
@@ -126,7 +174,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   <MenuItem value={'NO'}>NO</MenuItem>
                 </Select>
               </FormControl>
-            </GridItem>            
+            </GridItem>
             <GridItem xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel id='entrada'>Entrada</InputLabel>
@@ -187,7 +235,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                 </Select>
               </FormControl>
             </GridItem>
-			<GridItem style={{ margin: '20px 0' }} xs={12} md={12}>
+            <GridItem style={{ margin: '20px 0' }} xs={12} md={12}>
               <FormControl fullWidth>
                 <InputLabel id='codigo_trazabilidad'>COD. TRAZABILIDAD</InputLabel>
                 <Select
@@ -231,8 +279,8 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                 {loadingTaskAbsenceUpdate
                   ? 'Actualizando...'
                   : successTaskAbsenceUpdate
-                  ? 'Tarea Ausencia Actualizada'
-                  : 'Actualizar Tarea Ausencia'}
+                    ? 'Tarea Ausencia Actualizada'
+                    : 'Actualizar Tarea Ausencia'}
               </Button>
             </GridItem>
           </GridContainer>

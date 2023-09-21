@@ -9,7 +9,10 @@ const { registerRecord } = require('../../utils/queryPromises')
 // @access  Private
 const updateAbsencesObjetives = asyncHandler(async (req, res) => {
    const { id } = req.params
+   console.log("EEFE")
    const { id_puesto } = req.user
+   console.log(id)
+   console.log(id_puesto)
    const {
       dificulty,
       unit_min,
@@ -47,6 +50,10 @@ const updateAbsencesObjetives = asyncHandler(async (req, res) => {
    const objetiveValues = []
    const objetiveHistKeys = []
    const objetiveHistValues = []
+   console.log(objetiveKeys)
+   console.log(objetiveValues)
+   console.log(objetiveHistKeys)
+   console.log(objetiveHistValues)
 
    variablesValues.forEach(absencesObjetives => {
 
@@ -149,10 +156,11 @@ const updateAbsencesObjetives = asyncHandler(async (req, res) => {
             porcentaje_jornada_maximo FROM objetivos WHERE objetivos.id_objetivo = ${id}
    `
    try {
+      console.log("llega al try")
       const historicos = await registerRecord(insertHistoricalQuery)
-
+      console.log(objetiveKeys.toString())
       db.query(
-         `UPDATE objetivos SET fecha_ultima_modificacion=sysdate(), ${objetiveKeys.toString()} WHERE (objetivos.id_objetivo = '${id}')`,
+         `UPDATE objetivos SET fecha_ultima_modificacion=sysdate(), ${objetiveKeys.toString()} WHERE (objetivos.id_objetivo = ${id})`,
          objetiveValues,
          (err, result) => {
          if (err) {
