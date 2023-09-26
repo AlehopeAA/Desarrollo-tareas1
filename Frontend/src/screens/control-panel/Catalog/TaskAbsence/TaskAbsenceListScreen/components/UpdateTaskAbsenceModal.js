@@ -59,9 +59,6 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
 
   useEffect(() => {
     if (indicadorAlert) {
-      console.log("despues del alert")
-
-      console.log(infoTaskAbsence)
       dispatch(taskAbsenceUpdateInfo(infoTaskAbsence))
       dispatch(objetivesAbsensesUpdateInfo(infoTaskAbsence))
     }
@@ -91,7 +88,6 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
         </SweetAlert>
       );
     } else {
-      console.log(infoTaskAbsence)
       dispatch(taskAbsenceUpdateInfo(infoTaskAbsence))
     }
   };

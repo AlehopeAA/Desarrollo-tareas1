@@ -50,7 +50,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
     (state) => state.taskOtherUpdate
   )
 
- const {
+  const {
     loadingObjetiveAbsenceUpdate,
     successObjetiveAbsenceUpdate,
     objetiveAbsenceUpdateData,
@@ -111,29 +111,25 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
         ...infoTaskOther,
         profilesData,
       };
-      console.log(infoTaskOther)
       dispatch(taskOtherUpdateInfo(data));
       dispatch(objetivesAbsensesUpdateInfo(infoTaskOther))
     }
   }, [indicadorAlert]); // Este efecto se dispara cada vez que indicadorAlert cambia
 
   const updateTaskHandler = (e) => {
-
     e.preventDefault();
-    
-let option=true
-
-
+    let option = false
     if (profilesData.length === 0) {
       return setProfileError('Por favor seleccione un Perfil.');
     }
-    if (infoTaskOther.compartida == 'NO'&& originShared == 'SI') {
-      option=window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
+    if (infoTaskOther.compartida == 'NO' && originShared == 'SI') {
+      option = window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
     }
     const data = {
       ...infoTaskOther,
       profilesData,
     };
+
     if (data.indicador == "NO") {
       setAlertupdateIndicador(
         <SweetAlert
@@ -152,11 +148,10 @@ let option=true
         </SweetAlert>
       );
     } else {
-      console.log(data)
       dispatch(taskOtherUpdateInfo(data));
     }
     if (option) {
-      
+
       dispatch(taskOtherUpdateInfo(data))
       dispatch(deleteShared(infoTaskOther.id_tarea))
     }
@@ -307,8 +302,9 @@ let option=true
                   label='Compartida'
                   onChange={(e) => {
                     setOriginShared(infoTaskOther.compartida)
-                    setInfoTaskOther({ ...infoTaskOther, compartida: e.target.value })}
-                }
+                    setInfoTaskOther({ ...infoTaskOther, compartida: e.target.value })
+                  }
+                  }
                 >
                   <MenuItem value={'SI'}>SI</MenuItem>
                   <MenuItem value={'NO'}>NO</MenuItem>

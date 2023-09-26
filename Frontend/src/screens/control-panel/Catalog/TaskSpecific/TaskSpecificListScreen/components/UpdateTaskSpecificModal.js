@@ -11,6 +11,8 @@ import { taskSpecificUpdateInfo } from 'redux/actions/taskSpecificActions'
 import { TASK_SPECIFIC_LIST_RESET, TASK_SPECIFIC_UPDATE_RESET } from 'redux/constants/taskSpecificConstants'
 import styles from '../styles/updateTaskSpecificModalStyles'
 import { deleteShared } from 'redux/actions/sharedActions'
+import SweetAlert from 'react-bootstrap-sweetalert'
+import { objetivesAbsensesUpdateInfo } from 'redux/actions/objetivesAbsencesActions'
 
 const useStyles = makeStyles(styles)
 
@@ -26,6 +28,16 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
     (state) => state.taskSpecificUpdate
   )
 
+  const {
+    loadingObjetiveAbsenceUpdate,
+    successObjetiveAbsenceUpdate,
+    objetiveAbsenceUpdateData,
+    errorObjetiveAbsenceUpdate,
+  } = useSelector((state) => state.objetivesAbsencesUpdate)
+
+  const [alertIndicador, setAlertupdateIndicador] = useState(null)
+  const [indicadorAlert, setIndicadorAlert] = useState(false)
+
   useEffect(() => {
     if (successTaskSpecificUpdate) {
       dispatch({ type: TASK_SPECIFIC_LIST_RESET })
@@ -37,28 +49,51 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
   }, [successTaskSpecificUpdate])
 
   useEffect(() => {
+    if (indicadorAlert) {
+      console.log("despues del alert")
+
+      console.log(infoTask)
+      dispatch(taskOtherUpdateInfo(infoTaskAbsence))
+      dispatch(objetivesAbsensesUpdateInfo(infoTaskAbsence))
+    }
+  }, [indicadorAlert]); // Este efecto se dispara cada vez que indicadorAlert cambia
+
+  useEffect(() => {
     dispatch({ type: TASK_SPECIFIC_UPDATE_RESET })
   }, [dispatch])
 
   const updateTaskHandler = (e) => {
     e.preventDefault()
-
-    let option = true
-
-
-    if (infoTask.compartida == 'NO'&& originShared == 'SI') {
-      option=window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
+    let option = false
+    if (infoTask.compartida == 'NO' && originShared == 'SI') {
+      option = window.confirm('Si modifica el atributo de esta tarea a compartida=no, los % de responsabilidad previamente asignados se borrarán, desea continuar?')
     }
 
+    if (infoTask.indicador == "NO") {
+      setAlertupdateIndicador(
+        <SweetAlert
+          info
+          style={{ display: 'block', marginTop: '-100px' }}
+          title='Aviso!'
+          onConfirm={() => setIndicadorAlert(true)} // Aquí cambias indicadorAlert a true
+          onCancel={() => setAlertupdateIndicador(null)}
+          confirmBtnText='SI'
+          cancelBtnText='NO'
+          confirmBtnCssClass={classes.button + ' ' + classes.success}
+          cancelBtnCssClass={classes.button + ' ' + classes.danger}
+          showCancel
+        >
+          Si modifica el atributo de esta tarea a indicador=no, los valores de los objetivos asignados se borrarán, desea continuar?
+        </SweetAlert>
+      );
+    } else {
+      dispatch(taskOtherUpdateInfo(data));
+    }
     if (option) {
-      
-      dispatch(taskSpecificUpdateInfo(infoTask))
-      dispatch(deleteShared(infoTask.id_tarea))
+
+      dispatch(taskOtherUpdateInfo(data))
+      dispatch(deleteShared(infoTaskOther.id_tarea))
     }
-
-
-    // dispatch(taskSpecificUpdateInfo(infoTask))
-
   }
   const handleSelector = (e) => {
     const {
@@ -75,6 +110,9 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
       aria-labelledby='notice-modal-slide-title'
       aria-describedby='notice-modal-slide-description'
     >
+      <div>
+        {alertIndicador}
+      </div>
       <form onSubmit={updateTaskHandler} autoComplete='false'>
         <DialogTitle id='notice-modal-slide-title' disableTypography className={classes.modalHeader}>
           <Button
@@ -105,7 +143,7 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   required: true,
                 }}
               />
-            </GridItem>            
+            </GridItem>
             <GridItem xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel id='indicador'>Indicador</InputLabel>
@@ -160,8 +198,9 @@ const UpdateTaskModal = ({ handleCloseModal, updateTaskModal, showUpdateTask }) 
                   value={infoTask.compartida}
                   label='Compartida'
                   onChange={(e) => {
-setOriginShared(infoTask.compartida)
-                    setInfoTask({ ...infoTask, compartida: e.target.value })}
+                    setOriginShared(infoTask.compartida)
+                    setInfoTask({ ...infoTask, compartida: e.target.value })
+                  }
                   }
                 >
                   <MenuItem value={'SI'}>SI</MenuItem>
@@ -199,7 +238,7 @@ setOriginShared(infoTask.compartida)
                 </Select>
               </FormControl>
             </GridItem>
-			      <GridItem style={{ margin: '20px 0' }} xs={12} md={12}>
+            <GridItem style={{ margin: '20px 0' }} xs={12} md={12}>
               <FormControl fullWidth>
                 <InputLabel id='codigo_trazabilidad'>COD. TRAZABILIDAD</InputLabel>
                 <Select
@@ -244,8 +283,8 @@ setOriginShared(infoTask.compartida)
                 {loadingTaskSpecificUpdate
                   ? 'Actualizando...'
                   : successTaskSpecificUpdate
-                  ? 'Tarea Específica Actualizada'
-                  : 'Actualizar Tarea Específica'}
+                    ? 'Tarea Específica Actualizada'
+                    : 'Actualizar Tarea Específica'}
               </Button>
             </GridItem>
           </GridContainer>

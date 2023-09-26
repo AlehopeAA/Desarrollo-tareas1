@@ -59,37 +59,12 @@ const TaskOtherListScreen = () => {
   const { loadingTaskOtherList, taskOthers, successTaskOtherList, errorTaskOtherList } = useSelector((state) => state.taskOtherList)
 
   const { loadingObjetivesByTask, objetivesByTask, successObjetivesByTask, errorObjetivesByTask, } = useSelector((state) => state.objetivesByTask)
-  console.log('here');
-  console.log(objetivesByTask)
-  // useEffect(()=>{
-  //   console.log(successObjetivesByTask)
-  //   if (successObjetivesByTask) {
-  //     setViewObjetives(true)
-  //     setShowObjetives(objetivesByTask)
-  //   }
-  // },[successObjetivesByTask])
-
-  // const confirmSuccess = () => {
-  //   setAlert(null)
-  //   // dispatch({ type: PROFILE_LIST_RESET })
-  //   // dispatch({ type: TASK_REGISTER_RESET })
-  //   // setTaskType('')
-  //   // dispatch({ type: TASK_LIST_BY_PROFILE_ID_RESET })
-  //   // dispatch({ type: TASK_LIST_DUPLICATE_BY_PROFILE_CLEAN })    
-  // }
-
-  // const hideAlert = () => {
-  //   setAlert(null)
-  // }
 
   useEffect(() => {
-    // console.log(objetivesByTask)
     if (successObjetivesByTask && objetivesByTask[0] != null) {
       verObjetivos()
     } else if (successObjetivesByTask && objetivesByTask[0] == null) {
-
-
-      // console.log(objetivesByTask)
+      
       window.alert('Esta tarea no tiene objetivos asignados')
     }
 
